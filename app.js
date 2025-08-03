@@ -2,6 +2,7 @@ const path = require("node:path");
 const expressLayouts = require("express-ejs-layouts");
 const express = require("express");
 const indexRouter = require("./routers/indexRouter");
+const authRouter = require("./routers/authRouter");
 const app = express();
 
 app.set("views", path.join(__dirname, "views"));
@@ -16,7 +17,7 @@ app.use(expressLayouts);
 app.set("layout", "layout");
 
 app.use("/", indexRouter);
-app.use("/new", indexRouter);
+app.use("/login", authRouter);
 
 app.get("/*splat", (req, res) => {
   res.status(404).render(path.join(__dirname, "views/pages/404.ejs"));
