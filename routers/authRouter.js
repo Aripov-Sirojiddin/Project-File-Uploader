@@ -70,6 +70,14 @@ passport.deserializeUser(function (user, cb) {
     return cb(null, user);
   });
 });
+authRouter.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
 
 authRouter.get("/login", (req, res, next) => {
   res.render("pages/login");
