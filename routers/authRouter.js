@@ -21,7 +21,6 @@ passport.use(
           "SELECT * FROM federated_credentials WHERE provider = $1 AND subject = $2",
           [issuer, profile.id]
         );
-        console.log(`Result: ${result}`);
         if (result.rows.length === 0) {
           // If no federated credentials, insert a new user
           const insertUserResult = await pool.query(
@@ -59,6 +58,18 @@ passport.use(
     }
   )
 );
+
+passport.serializeUser(function (user, cb) {
+  process.nextTick(function () {
+    cb(null, { id: user.id, username: user.username, name: user.name });
+  });
+});
+
+passport.deserializeUser(function (user, cb) {
+  process.nextTick(function () {
+    return cb(null, user);
+  });
+});
 
 authRouter.get("/login", (req, res, next) => {
   res.render("pages/login");
