@@ -1,7 +1,8 @@
-let users = ["Max"];
+const pool = require("./pool");
 
-function getAllUsers() {
-  return users;
+async function getAllUsers() {
+  const { rows } = await pool.query("SELECT * FROM users")
+  return rows;
 }
 
 function createUser(name) {
