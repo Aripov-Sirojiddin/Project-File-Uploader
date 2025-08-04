@@ -101,7 +101,7 @@ passport.use(
 );
 
 authRouter.get("/signup", (req, res, next) => {
-  res.render("pages/signup", { errors: [] });
+  res.render("pages/signup", { errors: [], values: {} });
 });
 
 authRouter.post(
@@ -120,7 +120,10 @@ authRouter.post(
     if (result.isEmpty()) {
       res.render("/");
     } else {
-      res.render("pages/signup", { errors: result.errors });
+      res.render("pages/signup", {
+        errors: result.errors,
+        values: { ...req.body },
+      });
     }
   }
 );
