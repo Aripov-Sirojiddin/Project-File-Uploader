@@ -130,6 +130,12 @@ authRouter.post(
   "/signup",
   [
     body("email").trim().isEmail().withMessage("Please enter a valid email."),
+    body("email").custom(async (value) => {
+      const user = await db.getUserByEmail(value);
+      if (user) {
+        throw new Error("Email already in use.");
+      }
+    }),
     body("password")
       .trim()
       .notEmpty()
