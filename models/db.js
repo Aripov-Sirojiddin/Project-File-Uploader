@@ -1,15 +1,20 @@
-const pool = require("./pool");
+const { PrismaClient } = require("../generated/prisma");
+const prisma = new PrismaClient();
 
-async function getAllUsers() {
-  const { rows } = await pool.query("SELECT * FROM users")
-  return rows;
-}
-
-function createUser(name) {
-  users.push(name);
+async function getUserByUsername(username) {
+  try {
+    const user = await prisma.users.findUnique({
+      where: {
+        username: username,
+      },
+    });
+    return user;
+  } catch (err) {
+    console.error("Error finding user: " + err);
+    throw err;
+  }
 }
 
 module.exports = {
-  getAllUsers,
-  createUser,
+  getUserByUsername,
 };

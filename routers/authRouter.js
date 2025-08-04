@@ -1,11 +1,15 @@
 const express = require("express");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oidc");
+const LocalStrategy = require("passport-local").Strategy;
 const pool = require("../models/pool");
+const db = require("../models/db");
+const bcrypt = require("bcrypt");
 
 const authRouter = express.Router();
 require("dotenv").config();
 
+//Authentication Using Google
 passport.use(
   new GoogleStrategy(
     {
@@ -70,6 +74,29 @@ passport.deserializeUser(function (user, cb) {
     return cb(null, user);
   });
 });
+
+//Authentication using LocalStrategy
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await db.getUserByUsername(username);
+
+      if (!user) {
+        return done(null, false, { message: "Incorrect username" });
+      }
+
+      const isCorrectPassword = await bcrypt.compare(password, user.password);
+      if (!isCorrectPassword) {
+        return done(null, false, { message: "Incorrect password" });
+      }
+
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  })
+);
+
 authRouter.get("/logout", (req, res, next) => {
   req.logout((err) => {
     if (err) {

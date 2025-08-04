@@ -26,8 +26,8 @@ describe("GET /login", () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.text).to.include(`<h1>Sign In</h1>
-<a class="button google" href="/login/federated/google">Sign in with Google</a>`);
+        expect(res.text).to.include(`<h1>Login</h1>`);
+        expect(res.text).to.include(`<form action="/login" method="POST">`);
         done();
       });
   });
@@ -41,9 +41,10 @@ describe("GET /not_real_path", () => {
       .expect(404)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.text).to.include(`<h1>Whoops! You're not supposed to be here....</h1>`);
+        expect(res.text).to.include(
+          `<h1>Whoops! You're not supposed to be here....</h1>`
+        );
         done();
       });
   });
 });
-
