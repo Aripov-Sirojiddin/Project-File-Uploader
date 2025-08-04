@@ -150,7 +150,7 @@ authRouter.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/",
-    failureRedirect: "/signup",
+    failureRedirect: "/login",
   })
 );
 
