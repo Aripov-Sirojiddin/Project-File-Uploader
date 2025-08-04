@@ -106,6 +106,14 @@ authRouter.get("/logout", (req, res, next) => {
   });
 });
 
+authRouter.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/signup",
+  })
+);
+
 authRouter.get("/login", (req, res, next) => {
   res.render("pages/login");
 });
