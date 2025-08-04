@@ -16,10 +16,11 @@ passport.use(
       clientID: process.env["GOOGLE_CLIENT_ID"],
       clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
       callbackURL: "/oauth2/redirect/google",
-      scope: ["profile"],
+      scope: ["profile", "email"],
     },
     async function verify(issuer, profile, cb) {
       try {
+        const email = profile.emails[0].value;
         // Check if the federated credentials exist
         const result = await pool.query(
           "SELECT * FROM federated_credentials WHERE provider = $1 AND subject = $2",
@@ -28,8 +29,8 @@ passport.use(
         if (result.rows.length === 0) {
           // If no federated credentials, insert a new user
           const insertUserResult = await pool.query(
-            "INSERT INTO users (name) VALUES ($1) RETURNING id",
-            [profile.displayName]
+            "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id",
+            [profile.displayName, email]
           );
           const id = insertUserResult.rows[0].id;
 
@@ -42,6 +43,7 @@ passport.use(
           const user = {
             id: id,
             name: profile.displayName,
+            email: email,
           };
           return cb(null, user);
         } else {
