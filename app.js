@@ -7,15 +7,9 @@ const authRouter = require("./routers/authRouter");
 const passport = require("passport");
 const app = express();
 
-require("dotenv").config();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-
-const assetsPath = path.join(__dirname, "public");
 app.use(
   session({
     secret: "keyboard cat",
@@ -27,6 +21,14 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate("session"));
+
+require("dotenv").config();
+
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+const assetsPath = path.join(__dirname, "public");
 
 const PORT = process.env.PORT || 3000;
 

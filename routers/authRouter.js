@@ -82,25 +82,45 @@ passport.deserializeUser(function (user, cb) {
 
 //Authentication using LocalStrategy
 passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    try {
-      const user = await db.getUserByUsername(username);
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (email, password, done) => {
+      try {
+        const user = await db.getUserByEmail(email);
+        console.log(user);
+        if (!user) {
+          return done(null, false, { message: "Incorrect email" });
+        }
 
-      if (!user) {
-        return done(null, false, { message: "Incorrect username" });
+        const isCorrectPassword = await bcrypt.compare(password, user.password);
+
+        if (!isCorrectPassword) {
+          return done(null, false, { message: "Incorrect password" });
+        }
+
+        return done(null, user);
+      } catch (err) {
+        return done(err);
       }
-
-      const isCorrectPassword = await bcrypt.compare(password, user.password);
-      if (!isCorrectPassword) {
-        return done(null, false, { message: "Incorrect password" });
-      }
-
-      return done(null, user);
-    } catch (err) {
-      return done(err);
     }
-  })
+  )
 );
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = db.getUserById(id);
+    done(null, user);
+  } catch (err) {
+    return done(err);
+  }
+});
 
 authRouter.get("/signup", (req, res, next) => {
   res.render("pages/signup", { errors: [], values: {} });
