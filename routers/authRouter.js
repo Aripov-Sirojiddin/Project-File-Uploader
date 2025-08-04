@@ -5,6 +5,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const pool = require("../models/pool");
 const db = require("../models/db");
 const bcrypt = require("bcrypt");
+const { body, validationResult } = require("express-validator");
 
 const authRouter = express.Router();
 require("dotenv").config();
@@ -100,8 +101,29 @@ passport.use(
 );
 
 authRouter.get("/signup", (req, res, next) => {
-  res.render("pages/signup");
+  res.render("pages/signup", { errors: [] });
 });
+
+authRouter.post(
+  "/signup",
+  [
+    body("email").trim().isEmail().withMessage("Please enter a valid email."),
+    body("password")
+      .trim()
+      .notEmpty()
+      .withMessage("Password cannot be empty.")
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters long."),
+  ],
+  (req, res, next) => {
+    const result = validationResult(req);
+    if (result.isEmpty()) {
+      res.render("/");
+    } else {
+      res.render("pages/signup", { errors: result.errors });
+    }
+  }
+);
 
 authRouter.get("/logout", (req, res, next) => {
   req.logout((err) => {
