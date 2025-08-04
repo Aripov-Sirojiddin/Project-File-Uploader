@@ -5,6 +5,8 @@ const LocalStrategy = require("passport-local").Strategy;
 const pool = require("../models/pool");
 const db = require("../models/db");
 const bcrypt = require("bcrypt");
+const { PrismaClient } = require("../generated/prisma");
+const prisma = new PrismaClient();
 const { body, validationResult } = require("express-validator");
 
 const authRouter = express.Router();
@@ -115,10 +117,17 @@ authRouter.post(
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters long."),
   ],
-  (req, res, next) => {
+  async (req, res, next) => {
     const result = validationResult(req);
     if (result.isEmpty()) {
-      res.render("/");
+      await prisma.users.create({
+        data: {
+          name: `${req.body.firstname} ${req.body.lastname}`,
+          email: req.body.email,
+          password: await bcrypt.hash(req.body.password, 10),
+        },
+      });
+      res.redirect("/login");
     } else {
       res.render("pages/signup", {
         errors: result.errors,
