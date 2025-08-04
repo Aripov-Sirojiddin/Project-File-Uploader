@@ -40,3 +40,5 @@ app.get("/*splat", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
+
+module.exports = app;
