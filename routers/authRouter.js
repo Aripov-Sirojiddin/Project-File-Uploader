@@ -97,6 +97,10 @@ passport.use(
   })
 );
 
+authRouter.get("/signup", (req, res, next) => {
+  res.render("pages/signup");
+});
+
 authRouter.get("/logout", (req, res, next) => {
   req.logout((err) => {
     if (err) {
@@ -118,6 +122,7 @@ authRouter.get("/login", (req, res, next) => {
   res.render("pages/login");
 });
 
+//Google authentication with passport.js
 authRouter.get("/login/federated/google", passport.authenticate("google"));
 
 authRouter.get(
