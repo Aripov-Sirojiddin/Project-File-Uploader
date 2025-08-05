@@ -170,9 +170,11 @@ authRouter.get("/logout", (req, res, next) => {
 authRouter.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
     failureRedirect: "/login",
-  })
+  }),
+  (req, res) => {
+    res.redirect(`/?parentId=${req.user.id}`);
+  }
 );
 
 authRouter.get("/login", (req, res, next) => {
@@ -185,9 +187,11 @@ authRouter.get("/login/federated/google", passport.authenticate("google"));
 authRouter.get(
   "/oauth2/redirect/google",
   passport.authenticate("google", {
-    successRedirect: "/",
     failureRedirect: "/login",
-  })
+  }),
+  (req, res) => {
+    res.redirect(`/?parentId=${req.user.id}`);
+  }
 );
 
 module.exports = authRouter;
