@@ -1,6 +1,5 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
-const root = require("./root");
 
 async function getById(id) {
   try {
@@ -39,7 +38,6 @@ async function create(name, email, password = null) {
       password: password,
     },
   });
-  await root.create(user.id, user.name);
   return user;
 }
 

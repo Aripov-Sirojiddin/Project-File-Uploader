@@ -2,7 +2,7 @@ const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 async function create(parentId, name) {
-  const folder = await prisma.folder.create({
+  const folder = await prisma.folders.create({
     data: {
       parentId: parentId,
       name: name,
@@ -15,9 +15,9 @@ async function create(parentId, name) {
 }
 
 async function getAllByParentId(parentId) {
-  const folders = await prisma.folder.findMany({
+  const folders = await prisma.folders.findMany({
     where: {
-      parentId: Number(parentId),
+      parentId: parentId,
     },
   });
 
