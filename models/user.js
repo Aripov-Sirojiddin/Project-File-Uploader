@@ -1,5 +1,6 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
+const root = require("./root");
 
 async function getById(id) {
   try {
@@ -29,16 +30,6 @@ async function getByEmail(email) {
     throw err;
   }
 }
-async function createRootFolder(ownerId, username) {
-  const rootFolder = await prisma.root.create({
-    data: {
-      userId: ownerId,
-      name: `${username.split(" ").join("-").toLowerCase()}-root`,
-    },
-  });
-
-  return rootFolder;
-}
 
 async function create(name, email, password = null) {
   const user = await prisma.users.create({
@@ -48,7 +39,7 @@ async function create(name, email, password = null) {
       password: password,
     },
   });
-  await createRootFolder(user.id, user.name);
+  await root.create(user.id, user.name);
   return user;
 }
 
