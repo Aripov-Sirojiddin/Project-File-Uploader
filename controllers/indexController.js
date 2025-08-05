@@ -4,7 +4,6 @@ async function getAllFolders(req, res) {
   const authenticated = await req.isAuthenticated();
   if (authenticated) {
     const folders = await folderModel.getAllByParentId(global.parentId);
-    console.log(folders);
     
     res.render("pages/logedin", {
       name: req.user.name,

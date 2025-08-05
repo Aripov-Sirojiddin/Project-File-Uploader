@@ -10,12 +10,18 @@ async function getCreateView(req, res) {
 }
 
 async function openFolder(req, res) {
-  const folderId = req.param.folderId;
-  console.log(folderId);
+  const folderId = Number(req.params.folderId);
+  const folders = await folderModel.getAllByParentId(folderId);
+
+  res.render("pages/logedin", {
+    name: req.user.name,
+    createFolder: false,
+    folders: folders,
+  });
 }
 
 async function createFolder(req, res) {
-  folderModel.create(global.parentId, req.body.name);
+  folderModel.create(global.folderId, req.body.name);
   res.redirect("/");
 }
 

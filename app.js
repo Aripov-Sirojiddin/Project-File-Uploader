@@ -37,8 +37,8 @@ app.use(express.static(assetsPath));
 app.use(expressLayouts);
 app.set("layout", "layout");
 
-app.use("/folder", folderRouter);
 app.use("/", authRouter);
+app.use("/folder", folderRouter);
 app.use("/", indexRouter);
 
 app.get("/*splat", (req, res) => {
