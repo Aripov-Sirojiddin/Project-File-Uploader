@@ -61,15 +61,15 @@ passport.use(
           return cb(null, user);
         } else {
           // If federated credentials exist, retrieve the user
-          const userResult = await pool.query(
-            "SELECT * FROM users WHERE id = $1",
-            [result.user_id]
-          );
-
-          if (userResult.rows.length === 0) {
+          const user = await prisma.users.findFirst({
+            where: {
+              id: Number(result.user_id),
+            },
+          });
+          if (user === null) {
             return cb(null, false); // User not found
           }
-          return cb(null, userResult.rows[0]); // Return the user
+          return cb(null, user); // Return the user
         }
       } catch (err) {
         return cb(err); // Handle any errors
