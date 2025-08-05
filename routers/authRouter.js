@@ -3,6 +3,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oidc");
 const LocalStrategy = require("passport-local").Strategy;
 const db = require("../models/db");
+const federatedCredentials = require("../models/federatedCredentials");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
 
@@ -23,7 +24,7 @@ passport.use(
         const email = profile.emails[0].value;
         // Check if the federated credentials exist
 
-        const result = await db.findFederatedCredential(issuer, profile.id);
+        const result = await federatedCredentials.find(issuer, profile.id);
 
         if (result === null) {
           // If no federated credentials, insert a new user
@@ -35,7 +36,7 @@ passport.use(
           const id = insertUserResult.id;
 
           // Insert federated credentials
-          await db.createFederatedCredential(id, issuer, profile.id);
+          await federatedCredentials.create(id, issuer, profile.id);
 
           const user = {
             id: id,
