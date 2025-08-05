@@ -16,8 +16,34 @@ model federated_credentials {
 }
 
 model users {
-  id       Int    @id @default(autoincrement())
-  name     String @db.VarChar(255)
-  email    String @unique @db.VarChar(255)
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(255)
+  email    String  @unique @db.VarChar(255)
   password String? @db.VarChar(255)
+
+  root root[]
+}
+
+model root {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+
+  userId Int   @unique
+  user   users @relation(fields: [userId], references: [id])
+
+  folders folder[]
+}
+
+model folder {
+  id   Int      @id @default(autoincrement())
+  name String   @db.VarChar(255)
+  size Int      @db.Integer
+  date DateTime @db.Timestamp()
+
+  parentId Int
+  folder   folder?  @relation("SubFolder", fields: [parentId], references: [id], onDelete: Cascade)
+  folders  folder[] @relation("SubFolder")
+  
+  root     root?    @relation(fields: [rootId], references: [id])
+  rootId   Int?
 }
