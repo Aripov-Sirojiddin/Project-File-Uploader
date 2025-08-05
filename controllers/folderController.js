@@ -1,12 +1,17 @@
 const folderModel = require("../models/folders");
-const rootModel = require("../models/root");
 
 async function getCreateView(req, res) {
-  res.render("pages/logedin", { name: req.user.name, createFolder: true });
+  const folders = await folderModel.getAllByParentId(global.parentId);
+
+  res.render("pages/logedin", {
+    name: req.user.name,
+    createFolder: true,
+    folders: folders,
+  });
 }
 
 async function createFolder(req, res) {
-  console.log(global.parentId);
+  folderModel.create(global.parentId, req.body.name);
   res.redirect("/");
 }
 
