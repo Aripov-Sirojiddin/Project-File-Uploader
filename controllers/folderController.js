@@ -1,7 +1,7 @@
 const folderModel = require("../models/folders");
 
 async function getCreateView(req, res) {
-  const folders = await folderModel.getAllByParentId(global.parentId);
+  const folders = await folderModel.getAllByParentId(global.folderId);
   res.render("pages/logedin", {
     name: req.user.name,
     createFolder: true,
@@ -12,6 +12,7 @@ async function getCreateView(req, res) {
 async function openFolder(req, res) {
   const folderId = Number(req.params.folderId);
   const folders = await folderModel.getAllByParentId(folderId);
+  global.folderId = folderId;
 
   res.render("pages/logedin", {
     name: req.user.name,
