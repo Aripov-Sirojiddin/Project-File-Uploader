@@ -3,7 +3,7 @@ const db = require("../models/user.js");
 async function getAllUsers(req, res) {
   const authenticated = await req.isAuthenticated();
   if (authenticated) {
-    res.render("pages/logedin", { name: req.user.name });
+    res.render("pages/logedin", { name: req.user.name, createFolder: false });
   } else {
     res.render("pages/index");
   }

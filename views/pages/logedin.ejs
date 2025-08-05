@@ -1,2 +1,8 @@
 <h1><%= name %></h1>
 <a href="/logout">Logout</a>
+<% if (createFolder) { %>
+  <a href="/">Close</a>
+  <%- include("../partials/folderCreationForm") %>
+<% } else { %>
+  <a href="/folder/create">Create folder</a>
+<% }; %>

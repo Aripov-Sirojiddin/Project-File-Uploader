@@ -4,6 +4,7 @@ const session = require("express-session");
 const express = require("express");
 const indexRouter = require("./routers/indexRouter");
 const authRouter = require("./routers/authRouter");
+const folderRouter = require("./routers/folderRouter");
 const passport = require("passport");
 const app = express();
 
@@ -24,7 +25,6 @@ app.use(passport.authenticate("session"));
 
 require("dotenv").config();
 
-
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
@@ -37,6 +37,7 @@ app.use(express.static(assetsPath));
 app.use(expressLayouts);
 app.set("layout", "layout");
 
+app.use("/folder", folderRouter);
 app.use("/", authRouter);
 app.use("/", indexRouter);
 
