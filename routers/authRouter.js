@@ -47,11 +47,8 @@ passport.use(
           return cb(null, user);
         } else {
           // If federated credentials exist, retrieve the user
-          const user = await prisma.users.findFirst({
-            where: {
-              id: Number(result.user_id),
-            },
-          });
+          const user = await db.findUser(result.user_id);
+
           if (user === null) {
             return cb(null, false); // User not found
           }

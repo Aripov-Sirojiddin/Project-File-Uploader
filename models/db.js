@@ -39,6 +39,14 @@ async function createUser(name, email) {
   });
 }
 
+async function findUser(id) {
+  return await prisma.users.findFirst({
+    where: {
+      id: Number(id),
+    },
+  });
+}
+
 async function createFederatedCredential(id, provider, subject) {
   return await prisma.federated_credentials.create({
     data: {
@@ -61,6 +69,7 @@ module.exports = {
   getUserById,
   getUserByEmail,
   createUser,
+  findUser,
   createFederatedCredential,
   findFederatedCredential,
 };
