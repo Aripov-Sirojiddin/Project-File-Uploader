@@ -26,7 +26,7 @@ async function openFolder(req, res) {
 }
 
 async function createFolder(req, res) {
-  folderModel.create(global.folderId, req.body.name);
+  folderModel.create(global.folderId, req.body.name, req.user.id);
   res.redirect("/");
 }
 
