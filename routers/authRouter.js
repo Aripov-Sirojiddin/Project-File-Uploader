@@ -90,7 +90,6 @@ passport.use(
     async (email, password, done) => {
       try {
         const user = await db.getUserByEmail(email);
-        console.log(user);
         if (!user) {
           return done(null, false, { message: "Incorrect email" });
         }
@@ -142,6 +141,11 @@ authRouter.post(
       .withMessage("Password cannot be empty.")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters long."),
+    body("confirm_password").custom(async (value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords don't match.");
+      }
+    }),
   ],
   async (req, res, next) => {
     const result = validationResult(req);

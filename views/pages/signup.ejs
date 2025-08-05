@@ -2,14 +2,45 @@
 <div class="error">
   <ul>
     <% errors.forEach((error) => { %>
-      <a href="#<%= error.path%>"><li><%= error.msg %></li></a>
+    <a href="#<%= error.path%>"><li><%= error.msg %></li></a>
     <% }); %>
   </ul>
 </div>
 <form action="/signup" method="POST">
-  <input id="firstname" name="firstname" placeholder="Firstname" type="text" value="<%= values.firstname %>"/>
-  <input id="lastname" name="lastname" placeholder="Lastname" type="text" value="<%= values.lastname %>"/>
-  <input id="email" name="email" placeholder="email" type="text" value="<%= values.email %>"/>
-  <input id="password" name="password" placeholder="password" type="password" value="<%= values.password %>"/>
+  <input
+    id="firstname"
+    name="firstname"
+    placeholder="Firstname"
+    type="text"
+    value="<%= values.firstname %>"
+  />
+  <input
+    id="lastname"
+    name="lastname"
+    placeholder="Lastname"
+    type="text"
+    value="<%= values.lastname %>"
+  />
+  <input
+    id="email"
+    name="email"
+    placeholder="Email (example@example.com)"
+    type="text"
+    value="<%= values.email %>"
+  />
+  <input
+    id="password"
+    name="password"
+    placeholder="Password"
+    type="password"
+    value="<%= values.password %>"
+  />
+  <input
+    id="confirm_password"
+    name="confirm_password"
+    placeholder="Confirm Password"
+    type="password"
+    value="<%= values.confirm_password %>"
+  />
   <button type="submit">Create account</button>
 </form>
