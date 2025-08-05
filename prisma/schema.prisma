@@ -20,15 +20,20 @@ model users {
   name     String  @db.VarChar(255)
   email    String  @unique @db.VarChar(255)
   password String? @db.VarChar(255)
+  folders  file[]
 }
 
-model folders {
-  id   Int      @id @default(autoincrement())
-  name String   @db.VarChar(255)
-  size Int      @db.Integer
-  date DateTime @db.Timestamp()
+model file {
+  id      Int      @id @default(autoincrement())
+  name    String   @db.VarChar(255)
+  size    Int      @db.Integer
+  date    DateTime @db.Timestamp()
+  type    String   @db.VarChar(255)
+  
+  ownerId Int
+  owner   users    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   parentId Int
-  folder   folders?  @relation("SubFolder", fields: [parentId], references: [id], onDelete: Cascade)
-  folders  folders[] @relation("SubFolder")
+  folder   file?  @relation("SubFolder", fields: [parentId], references: [id], onDelete: Cascade)
+  folders  file[] @relation("SubFolder")
 }
