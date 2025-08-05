@@ -25,11 +25,14 @@ passport.use(
       try {
         const email = profile.emails[0].value;
         // Check if the federated credentials exist
-        const result = await pool.query(
-          "SELECT * FROM federated_credentials WHERE provider = $1 AND subject = $2",
-          [issuer, profile.id]
-        );
-        if (result.rows.length === 0) {
+
+        const result = await prisma.federated_credentials.findFirst({
+          where: {
+            provider: issuer,
+            subject: profile.id,
+          },
+        });
+        if (result === null) {
           // If no federated credentials, insert a new user
           const insertUserResult = await pool.query(
             "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id",
@@ -53,7 +56,7 @@ passport.use(
           // If federated credentials exist, retrieve the user
           const userResult = await pool.query(
             "SELECT * FROM users WHERE id = $1",
-            [result.rows[0].user_id]
+            [result.user_id]
           );
 
           if (userResult.rows.length === 0) {
