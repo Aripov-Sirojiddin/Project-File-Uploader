@@ -173,7 +173,8 @@ authRouter.post(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    res.redirect(`/?folder=${req.user.id}`);
+    global.parentId = req.user.id;
+    res.redirect("/");
   }
 );
 
@@ -190,7 +191,8 @@ authRouter.get(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    res.redirect(`/?folder=${req.user.id}`);
+    global.parentId = req.user.id;
+    res.redirect("/");
   }
 );
 

@@ -7,7 +7,7 @@ async function create(parentId, name) {
       parentId: parentId,
       name: name,
       size: 0,
-      date: Date.now(),
+      date: new Date(Date.now()),
     },
   });
 
@@ -17,7 +17,7 @@ async function create(parentId, name) {
 async function getAllByParentId(parentId) {
   const folders = await prisma.folder.findMany({
     where: {
-      parentId: parentId,
+      parentId: Number(parentId),
     },
   });
 

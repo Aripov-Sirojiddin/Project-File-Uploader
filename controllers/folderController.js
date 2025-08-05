@@ -6,9 +6,8 @@ async function getCreateView(req, res) {
 }
 
 async function createFolder(req, res) {
-  const rootFolder = await rootModel.getId(req.user.id);
-  folderModel.create(rootFolder.id, req.body.name);
-  res.redirect("/"); 
+  console.log(global.parentId);
+  res.redirect("/");
 }
 
 module.exports = {
