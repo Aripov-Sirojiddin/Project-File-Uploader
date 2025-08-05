@@ -16,10 +16,12 @@ async function create(parentId, name, userId) {
   return folder;
 }
 
-async function getAllByParentId(parentId) {
+async function getAllByParentId(parentId, ownerId) {
   const folders = await prisma.file.findMany({
     where: {
+      ownerId: ownerId,
       parentId: parentId,
+      type: "folder",
     },
   });
 

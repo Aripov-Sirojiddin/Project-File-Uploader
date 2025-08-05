@@ -15,7 +15,7 @@ async function getFolderParentId(req, res) {
 
 async function openFolder(req, res) {
   const folderId = Number(req.params.folderId);
-  const folders = await folderModel.getAllByParentId(folderId);
+  const folders = await folderModel.getAllByParentId(folderId, req.user.id);
   global.folderId = folderId;
 
   res.render("pages/logedin", {
