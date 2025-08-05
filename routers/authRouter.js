@@ -4,8 +4,6 @@ const GoogleStrategy = require("passport-google-oidc");
 const LocalStrategy = require("passport-local").Strategy;
 const db = require("../models/db");
 const bcrypt = require("bcrypt");
-const { PrismaClient } = require("../generated/prisma");
-const prisma = new PrismaClient();
 const { body, validationResult } = require("express-validator");
 
 const authRouter = express.Router();
@@ -148,7 +146,7 @@ authRouter.post(
         req.body.email,
         await bcrypt.hash(req.body.password, 10)
       );
-      
+
       res.redirect("/login");
     } else {
       res.render("pages/signup", {
