@@ -24,7 +24,18 @@ async function getAllByParentId(parentId) {
   return folders;
 }
 
+async function getParentId(id) {
+  const folders = await prisma.folders.findFirst({
+    where: {
+      id: id,
+    },
+  });
+
+  return folders.parentId;
+}
+
 module.exports = {
   create,
+  getParentId,
   getAllByParentId,
 };

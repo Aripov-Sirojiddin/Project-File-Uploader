@@ -8,6 +8,10 @@ async function getCreateView(req, res) {
     folders: folders,
   });
 }
+async function getFolderParentId(req, res) {
+  global.folderId = await folderModel.getParentId(global.folderId);
+  res.redirect("/");
+}
 
 async function openFolder(req, res) {
   const folderId = Number(req.params.folderId);
@@ -29,5 +33,6 @@ async function createFolder(req, res) {
 module.exports = {
   getCreateView,
   openFolder,
+  getFolderParentId,
   createFolder,
 };

@@ -2,11 +2,13 @@ const { Router } = require("express");
 const folderRouter = Router();
 const {
   getCreateView,
+  getFolderParentId,
   openFolder,
   createFolder,
 } = require("../controllers/folderController");
 
 folderRouter.get("/create", getCreateView);
+folderRouter.get("/up", getFolderParentId);
 folderRouter.get("/:folderId", openFolder);
 folderRouter.post("/create", createFolder);
 
