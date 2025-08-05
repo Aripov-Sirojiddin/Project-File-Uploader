@@ -39,8 +39,18 @@ async function createUser(name, email) {
   });
 }
 
+
+async function findFederatedCredential(provider, subject) {
+  return await prisma.federated_credentials.findFirst({
+    where: {
+      provider: provider,
+      subject: subject,
+    },
+  });
+}
 module.exports = {
   getUserById,
   getUserByEmail,
   createUser,
+  findFederatedCredential,
 };

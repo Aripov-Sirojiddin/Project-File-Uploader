@@ -25,16 +25,15 @@ passport.use(
         const email = profile.emails[0].value;
         // Check if the federated credentials exist
 
-        const result = await prisma.federated_credentials.findFirst({
-          where: {
-            provider: issuer,
-            subject: profile.id,
-          },
-        });
+        const result = await db.findFederatedCredential(issuer, profile.id);
+
         if (result === null) {
           // If no federated credentials, insert a new user
 
-          const insertUserResult = db.createUser(profile.displayName, email);
+          const insertUserResult = await db.createUser(
+            profile.displayName,
+            email
+          );
           const id = insertUserResult.id;
 
           // Insert federated credentials
