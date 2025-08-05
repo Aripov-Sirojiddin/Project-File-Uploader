@@ -15,7 +15,7 @@ async function create(ownerId, username) {
 async function getId(ownerId) {
   const rootFolder = await prisma.root.findFirst({
     where: {
-      ownerId: ownerId,
+      userId: ownerId,
     },
   });
 
