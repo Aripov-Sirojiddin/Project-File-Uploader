@@ -6,3 +6,7 @@
 <% } else { %>
   <a href="/folder/create">Create folder</a>
 <% }; %>
+<p>Folders</p>
+<% folders.forEach((folder) => { %>
+  <a href=""><%= folder.name%></a>
+<% }); %>
