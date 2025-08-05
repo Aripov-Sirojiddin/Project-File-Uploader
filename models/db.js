@@ -29,15 +29,27 @@ async function getUserByEmail(email) {
     throw err;
   }
 }
+async function createRootFolder(ownerId, username) {
+  const rootFolder = await prisma.root.create({
+    data: {
+      userId: ownerId,
+      name: `${username.split(" ").join("-").toLowerCase()}-root`,
+    },
+  });
+
+  return rootFolder;
+}
 
 async function createUser(name, email, password = null) {
-  return await prisma.users.create({
+  const user = await prisma.users.create({
     data: {
       name: name,
       email: email,
       password: password,
     },
   });
+  await createRootFolder(user.id, user.name);
+  return user;
 }
 
 async function findUser(id) {
