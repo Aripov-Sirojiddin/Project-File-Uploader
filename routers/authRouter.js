@@ -2,7 +2,6 @@ const express = require("express");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oidc");
 const LocalStrategy = require("passport-local").Strategy;
-const pool = require("../models/pool");
 const db = require("../models/db");
 const bcrypt = require("bcrypt");
 const { PrismaClient } = require("../generated/prisma");
@@ -35,13 +34,7 @@ passport.use(
         if (result === null) {
           // If no federated credentials, insert a new user
 
-          const insertUserResult = await prisma.users.create({
-            data: {
-              name: profile.displayName,
-              email: email,
-            },
-          });
-
+          const insertUserResult = db.createUser(profile.displayName, email);
           const id = insertUserResult.id;
 
           // Insert federated credentials
