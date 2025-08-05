@@ -1,6 +1,6 @@
 const folderModel = require("../models/folders");
 
-async function getAllUsers(req, res) {
+async function getAllFolders(req, res) {
   const authenticated = await req.isAuthenticated();
   if (authenticated) {
     const folders = await folderModel.getAllByParentId(global.parentId);
@@ -16,5 +16,5 @@ async function getAllUsers(req, res) {
 }
 
 module.exports = {
-  getAllUsers,
+  getAllFolders,
 };
