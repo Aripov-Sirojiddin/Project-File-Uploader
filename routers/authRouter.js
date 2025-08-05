@@ -34,7 +34,7 @@ passport.use(
         });
         if (result === null) {
           // If no federated credentials, insert a new user
-          
+
           const insertUserResult = await prisma.users.create({
             data: {
               name: profile.displayName,
@@ -45,10 +45,13 @@ passport.use(
           const id = insertUserResult.id;
 
           // Insert federated credentials
-          await pool.query(
-            "INSERT INTO federated_credentials (user_id, provider, subject) VALUES ($1, $2, $3)",
-            [id, issuer, profile.id]
-          );
+          await prisma.federated_credentials.create({
+            data: {
+              user_id: `${id}`,
+              provider: issuer,
+              subject: profile.id,
+            },
+          });
 
           const user = {
             id: id,
