@@ -143,13 +143,12 @@ authRouter.post(
   async (req, res, next) => {
     const result = validationResult(req);
     if (result.isEmpty()) {
-      await prisma.users.create({
-        data: {
-          name: `${req.body.firstname} ${req.body.lastname}`,
-          email: req.body.email,
-          password: await bcrypt.hash(req.body.password, 10),
-        },
-      });
+      await db.createUser(
+        `${req.body.firstname} ${req.body.lastname}`,
+        req.body.email,
+        await bcrypt.hash(req.body.password, 10)
+      );
+      
       res.redirect("/login");
     } else {
       res.render("pages/signup", {
