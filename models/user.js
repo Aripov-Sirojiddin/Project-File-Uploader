@@ -1,7 +1,7 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
-async function getUserById(id) {
+async function getById(id) {
   try {
     const user = await prisma.await.findUnique({
       where: {
@@ -16,7 +16,7 @@ async function getUserById(id) {
   }
 }
 
-async function getUserByEmail(email) {
+async function getByEmail(email) {
   try {
     const user = await prisma.users.findUnique({
       where: {
@@ -40,7 +40,7 @@ async function createRootFolder(ownerId, username) {
   return rootFolder;
 }
 
-async function createUser(name, email, password = null) {
+async function create(name, email, password = null) {
   const user = await prisma.users.create({
     data: {
       name: name,
@@ -52,7 +52,7 @@ async function createUser(name, email, password = null) {
   return user;
 }
 
-async function findUser(id) {
+async function find(id) {
   return await prisma.users.findFirst({
     where: {
       id: Number(id),
@@ -61,8 +61,8 @@ async function findUser(id) {
 }
 
 module.exports = {
-  getUserById,
-  getUserByEmail,
-  createUser,
-  findUser,
+  getById,
+  getByEmail,
+  create,
+  find,
 };

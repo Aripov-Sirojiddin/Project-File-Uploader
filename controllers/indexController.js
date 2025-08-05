@@ -1,4 +1,4 @@
-const db = require("../models/db.js");
+const db = require("../models/user.js");
 
 async function getAllUsers(req, res) {
   const authenticated = await req.isAuthenticated();

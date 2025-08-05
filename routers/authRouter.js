@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oidc");
 const LocalStrategy = require("passport-local").Strategy;
-const db = require("../models/db");
+const userModel = require("../models/user");
 const federatedCredentials = require("../models/federatedCredentials");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
@@ -29,7 +29,7 @@ passport.use(
         if (result === null) {
           // If no federated credentials, insert a new user
 
-          const insertUserResult = await db.createUser(
+          const insertUserResult = await userModel.create(
             profile.displayName,
             email
           );
@@ -46,7 +46,7 @@ passport.use(
           return cb(null, user);
         } else {
           // If federated credentials exist, retrieve the user
-          const user = await db.findUser(result.user_id);
+          const user = await userModel.find(result.user_id);
 
           if (user === null) {
             return cb(null, false); // User not found
@@ -81,7 +81,7 @@ passport.use(
     },
     async (email, password, done) => {
       try {
-        const user = await db.getUserByEmail(email);
+        const user = await userModel.getByEmail(email);
         if (!user) {
           return done(null, false, { message: "Incorrect email" });
         }
@@ -106,7 +106,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = db.getUserById(id);
+    const user = userModel.getById(id);
     done(null, user);
   } catch (err) {
     return done(err);
@@ -122,7 +122,7 @@ authRouter.post(
   [
     body("email").trim().isEmail().withMessage("Please enter a valid email."),
     body("email").custom(async (value) => {
-      const user = await db.getUserByEmail(value);
+      const user = await userModel.getByEmail(value);
       if (user) {
         throw new Error("Email already in use.");
       }
@@ -142,7 +142,7 @@ authRouter.post(
   async (req, res, next) => {
     const result = validationResult(req);
     if (result.isEmpty()) {
-      await db.createUser(
+      await userModel.create(
         `${req.body.firstname} ${req.body.lastname}`,
         req.body.email,
         await bcrypt.hash(req.body.password, 10)
