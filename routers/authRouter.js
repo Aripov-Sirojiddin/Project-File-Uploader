@@ -37,13 +37,7 @@ passport.use(
           const id = insertUserResult.id;
 
           // Insert federated credentials
-          await prisma.federated_credentials.create({
-            data: {
-              user_id: `${id}`,
-              provider: issuer,
-              subject: profile.id,
-            },
-          });
+          await db.createFederatedCredential(id, issuer, profile.id);
 
           const user = {
             id: id,
