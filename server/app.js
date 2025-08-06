@@ -25,17 +25,10 @@ app.use(passport.authenticate("session"));
 
 require("dotenv").config();
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-
 const assetsPath = path.join(__dirname, "public");
-
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(assetsPath));
-
-app.use(expressLayouts);
-app.set("layout", "layout");
 
 app.use("/", authRouter);
 app.use("/folder", folderRouter);
