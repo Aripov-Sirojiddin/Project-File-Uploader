@@ -1,33 +1,60 @@
 import axios from "axios";
 import styles from "../login/login.module.css";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function SignUp() {
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState([]);
+
   async function createAccount(event) {
     const data = Object.fromEntries(event);
     await axios
       .post(`${import.meta.env.VITE_URL}/signup`, data)
       .then((response) => {
-        console.log(response);
+        if (response.data.errors.length === 0) {
+          navigate("/login", { state: "Created successfully!" });
+        }
       })
-      .catch((errors) => {
-        console.log(errors);
+      .catch((error) => {
+        setErrors(error.response.data.errors);
       });
   }
+
+  const errorsView = errors.map((error) => (
+    <a href={`#${error.path}`}>{error.msg}</a>
+  ));
 
   return (
     <div className={styles.vertical_container}>
       <h1>Create Account</h1>
+      <div className={styles.error_box}>{errorsView}</div>
       <form action={createAccount}>
-        <input name="firstname" placeholder="Firstname" type="text" />
-        <input name="lastname" placeholder="Lastname" type="text" />
         <input
+          id="firstname"
+          name="firstname"
+          placeholder="Firstname"
+          type="text"
+        />
+        <input
+          id="lastname"
+          name="lastname"
+          placeholder="Lastname"
+          type="text"
+        />
+        <input
+          id="email"
           name="email"
           placeholder="Email (example@example.com)"
           type="text"
         />
-        <input name="password" placeholder="Password" type="password" />
         <input
-          id="confirm_password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          type="password"
+        />
+        <input
           name="confirm_password"
           placeholder="Confirm Password"
           type="password"
