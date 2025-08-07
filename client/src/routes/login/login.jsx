@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import styles from "./login.module.css";
 
 export default function LoginPage() {
   const [error, setError] = useState("");
@@ -21,9 +23,13 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      <h1>{error}</h1>
-      <form action={loginUser}>
+    <div className={styles.vertical_container}>
+      {error && (
+        <div className={styles.error_box}>
+          <p>{error}</p>
+        </div>
+      )}
+      <form action={loginUser} className={styles.vertical_container}>
         <input
           type="text"
           name="email"
@@ -32,6 +38,10 @@ export default function LoginPage() {
         <input type="password" name="password" placeholder="Password" />
         <button type="submit">Login</button>
       </form>
-    </>
+      <div className={styles.horizontal_container}>
+        <Link to="/signup">Sign Up</Link>
+        <Link to="/signup">Continue with google</Link>
+      </div>
+    </div>
   );
 }
