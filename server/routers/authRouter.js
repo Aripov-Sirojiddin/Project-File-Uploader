@@ -173,6 +173,7 @@ authRouter.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
+      delete user.password;
       return res.status(200).json({ user });
     });
   })(req, res, next);

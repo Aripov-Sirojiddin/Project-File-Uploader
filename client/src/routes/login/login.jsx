@@ -10,10 +10,7 @@ export default function LoginPage() {
     const data = Object.fromEntries(form);
 
     await axios
-      .post(`${import.meta.env.VITE_URL}/login`, {
-        email: form.get("email"),
-        password: form.get("password"),
-      })
+      .post(`${import.meta.env.VITE_URL}/login`, data)
       .then((response) => {
         console.log(response);
       })
