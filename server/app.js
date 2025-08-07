@@ -29,13 +29,9 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello from Express!" });
-});
-
-// app.use("/", authRouter);
-// app.use("/folder", folderRouter);
-// app.use("/", indexRouter);
+app.use("/", authRouter);
+app.use("/folder", folderRouter);
+app.use("/", indexRouter);
 
 app.get("/*splat", (req, res) => {
   res.status(404).render(path.join(__dirname, "views/pages/404.ejs"));
