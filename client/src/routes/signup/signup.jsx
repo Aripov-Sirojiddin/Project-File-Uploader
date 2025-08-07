@@ -1,6 +1,6 @@
 import axios from "axios";
 import styles from "../login/login.module.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function SignUp() {
@@ -85,6 +85,7 @@ export default function SignUp() {
         />
         <button type="submit">Create account</button>
       </form>
+      <Link to="/login">Back to Login</Link>
     </div>
   );
 }
