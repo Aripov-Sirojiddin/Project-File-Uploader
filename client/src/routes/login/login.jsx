@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
@@ -27,16 +27,19 @@ export default function LoginPage() {
     const left = window.innerWidth / 2 - width / 2;
     const top = window.innerHeight / 2 - height / 2;
 
-    const url = `${import.meta.env.VITE_URL}/login/federated/google`; // Your Express server URL
-    window.open(
-      url,
-      "Google Login",
-      `width=${width},height=${height},top=${top},left=${left}`
-    );
+    const url = `${import.meta.env.VITE_URL}/login/google`; // Your Express server URL
+    window
+      .open(
+        url,
+        "Google Login",
+        `width=${width},height=${height},top=${top},left=${left}`
+      )
+      .focus();
   }
 
   return (
     <div className={styles.vertical_container}>
+      <Outlet />
       {error && (
         <div className={styles.error_box}>
           <p>{error}</p>

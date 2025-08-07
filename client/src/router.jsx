@@ -3,6 +3,7 @@ import Root from "./routes/root";
 import ErrorPage from "./error-page";
 import LoginPage from "./routes/login/login";
 import SignUp from "./routes/signup/signup";
+import CloseWindow from "./routes/login/closeWindow";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "signup",
     element: <SignUp />,
+  },
+  {
+    path: "close",
+    element: <CloseWindow />,
   },
 ]);
 

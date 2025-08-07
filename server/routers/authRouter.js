@@ -180,17 +180,23 @@ authRouter.post("/login", (req, res, next) => {
 });
 
 //Google authentication with passport.js
-authRouter.get("/login/federated/google", passport.authenticate("google"));
+authRouter.get("/login/google", passport.authenticate("google"));
 
-authRouter.get(
-  "/oauth2/redirect/google",
-  passport.authenticate("google", {
-    failureRedirect: "/login",
-  }),
-  (req, res) => {
-    global.folderId = req.user.id;
-    res.redirect("/");
-  }
-);
+authRouter.get("/oauth2/redirect/google", (req, res, next) => {
+  passport.authenticate("google", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: info.message });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("http://localhost:5173/close");
+    });
+  })(req, res, next);
+});
 
 module.exports = authRouter;
