@@ -143,8 +143,7 @@ authRouter.post(
         req.body.email,
         await bcrypt.hash(req.body.password, 10)
       );
-
-      res.redirect("/login");
+      res.json({ errors: [] });
     } else {
       res.json({
         errors: result.errors,
