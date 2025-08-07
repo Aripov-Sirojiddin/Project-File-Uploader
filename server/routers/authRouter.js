@@ -143,9 +143,9 @@ authRouter.post(
         req.body.email,
         await bcrypt.hash(req.body.password, 10)
       );
-      res.json({ errors: [] });
+      res.status(200).json({ errors: [] });
     } else {
-      res.json({
+      res.status(400).json({
         errors: result.errors,
       });
     }

@@ -7,10 +7,12 @@ export default function LoginPage() {
   const [error, setError] = useState("");
 
   async function loginUser(form) {
-    const result = await axios
-      .post("http://localhost:3000/login", {
-        email: form.email,
-        password: form.password,
+    const data = Object.fromEntries(form);
+
+    await axios
+      .post(`${import.meta.env.VITE_URL}/login`, {
+        email: form.get("email"),
+        password: form.get("password"),
       })
       .then((response) => {
         console.log(response);
