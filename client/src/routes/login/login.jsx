@@ -21,6 +21,20 @@ export default function LoginPage() {
       });
   }
 
+  function openGoogleLogin() {
+    const width = 500;
+    const height = 600;
+    const left = window.innerWidth / 2 - width / 2;
+    const top = window.innerHeight / 2 - height / 2;
+
+    const url = `${import.meta.env.VITE_URL}/login/federated/google`; // Your Express server URL
+    window.open(
+      url,
+      "Google Login",
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+  }
+
   return (
     <div className={styles.vertical_container}>
       {error && (
@@ -39,7 +53,7 @@ export default function LoginPage() {
       </form>
       <div className={styles.horizontal_container}>
         <Link to="/signup">Sign Up</Link>
-        <Link to="/signup">Continue with google</Link>
+        <Link onClick={openGoogleLogin}>Continue with google</Link>
       </div>
     </div>
   );
