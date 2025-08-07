@@ -28,7 +28,7 @@ export default function SignUp() {
   return (
     <div className={styles.vertical_container}>
       <h1>Create Account</h1>
-      <div className={styles.error_box}>{errorsView}</div>
+      {errors.length > 0 && <div className={styles.error_box}>{errorsView}</div>}
       <form action={createAccount}>
         <input
           id="firstname"
