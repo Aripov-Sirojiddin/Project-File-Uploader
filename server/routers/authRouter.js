@@ -113,10 +113,6 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-authRouter.get("/signup", (req, res, next) => {
-  res.render("pages/signup", { errors: [], values: {} });
-});
-
 authRouter.post(
   "/signup",
   [
@@ -150,9 +146,8 @@ authRouter.post(
 
       res.redirect("/login");
     } else {
-      res.render("pages/signup", {
+      res.json({
         errors: result.errors,
-        values: { ...req.body },
       });
     }
   }
@@ -167,19 +162,21 @@ authRouter.get("/logout", (req, res, next) => {
   });
 });
 
-authRouter.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-  }),
-  (req, res) => {
-    global.folderId = req.user.id;
-    res.redirect("/");
-  }
-);
-
-authRouter.get("/login", (req, res, next) => {
-  res.render("pages/login");
+authRouter.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: info.message });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.status(200).json({ user });
+    });
+  })(req, res, next);
 });
 
 //Google authentication with passport.js
