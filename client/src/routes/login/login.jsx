@@ -13,6 +13,7 @@ export default function LoginPage() {
       .post(`${import.meta.env.VITE_URL}/login`, data)
       .then((response) => {
         console.log(response.data.token);
+        localStorage.setItem("token", response.data.token);
       })
       .catch((error) => {
         if (error.response.status === 401) {
@@ -43,7 +44,7 @@ export default function LoginPage() {
 
       const { token } = event.data;
       if (token) {
-        console.log(token);
+        localStorage.setItem("token", token);
       }
     });
   }
