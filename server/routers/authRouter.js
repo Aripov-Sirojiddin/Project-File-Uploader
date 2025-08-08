@@ -5,6 +5,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const userModel = require("../models/user");
 const federatedCredentials = require("../models/federatedCredentials");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 
 const authRouter = express.Router();
@@ -183,19 +184,26 @@ authRouter.post("/login", (req, res, next) => {
 authRouter.get("/login/google", passport.authenticate("google"));
 
 authRouter.get("/oauth2/redirect/google", (req, res, next) => {
-  passport.authenticate("google", (err, user, info) => {
+  passport.authenticate("google", { session: false }, (err, user, info) => {
     if (err) {
       return next(err);
     }
     if (!user) {
       return res.status(401).json({ message: info.message });
     }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      res.redirect("http://localhost:5173/close");
+    delete user.password;
+    const token = jwt.sign({ user }, process.env.JWT_SECRET, {
+      expiresIn: "5h",
     });
+    const script = `
+      <script>
+        window.opener.postMessage({token: '${token}'}, '${process.env.CLIENT_URL}');
+        window.close();
+      </script>
+    `;
+
+    res.setHeader("Content-Type", "text/html");
+    res.send(script);
   })(req, res, next);
 });
 

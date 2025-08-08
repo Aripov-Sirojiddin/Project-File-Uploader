@@ -35,6 +35,17 @@ export default function LoginPage() {
         `width=${width},height=${height},top=${top},left=${left}`
       )
       .focus();
+
+    window.addEventListener("message", (event) => {
+      if (event.origin !== import.meta.env.VITE_URL) {
+        return;
+      }
+
+      const { token } = event.data;
+      if (token) {
+        console.log(token);
+      }
+    });
   }
 
   return (
