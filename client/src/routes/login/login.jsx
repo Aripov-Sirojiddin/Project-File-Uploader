@@ -1,10 +1,19 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
+import { useEffect } from "react";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   async function loginUser(form) {
     const data = Object.fromEntries(form);
