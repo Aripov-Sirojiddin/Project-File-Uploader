@@ -23,6 +23,7 @@ export default function LoginPage() {
       .then((response) => {
         console.log(response.data.token);
         localStorage.setItem("token", response.data.token);
+        navigate("/");
       })
       .catch((error) => {
         if (error.response.status === 401) {
@@ -54,6 +55,7 @@ export default function LoginPage() {
       const { token } = event.data;
       if (token) {
         localStorage.setItem("token", token);
+        navigate("/");
       }
     });
   }
