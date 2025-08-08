@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 async function getById(id) {
   try {
-    const user = await prisma.await.findUnique({
+    const user = await prisma.users.findUnique({
       where: {
         id: id,
       },

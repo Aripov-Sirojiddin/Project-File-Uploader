@@ -2,9 +2,9 @@ const folderModel = require("../models/folders");
 const userModel = require("../models/user");
 
 async function getUser(req, res) {
-  const userId = req.params.userId;
-  const user = await userModel.getById(userId);
-  
+  const userId = req.params.userid;
+  const user = await userModel.getById(Number(userId));
+
   delete user.password;
 
   res.json({ user });
