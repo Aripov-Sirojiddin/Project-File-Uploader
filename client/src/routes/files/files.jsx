@@ -21,10 +21,19 @@ export default function Files({ token }) {
     );
     setUser(response.data.user);
   }
+
+  async function createFolder() {
+    
+  }
   return (
     <>
       <h1>Files</h1>
-      {user && <p>Welcome back {user.name}!</p>}
+      {user && (
+        <>
+          <p>Welcome back {user.name}!</p>
+          <a action={createFolder}>Create folder</a>
+        </>
+      )}
     </>
   );
 }

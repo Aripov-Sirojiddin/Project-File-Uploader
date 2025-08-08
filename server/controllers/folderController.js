@@ -19,18 +19,16 @@ async function getFolderParentId(req, res) {
 async function openFolder(req, res) {
   const folderId = Number(req.params.folderId);
   const folders = await folderModel.getAllByParentId(folderId, req.user.id);
-  global.folderId = folderId;
-
-  res.render("pages/logedin", {
-    name: req.user.name,
-    createFolder: false,
-    folders: folders,
-  });
+  if (folders) {
+    res.status(200).json({ folders });
+  } else {
+    res.status(401).json({ error: "Something went wrong on our end..." });
+  }
 }
 
 async function createFolder(req, res) {
-  folderModel.create(global.folderId, req.body.name, req.user.id);
-  res.redirect("/");
+  folderModel.create(req.body.parentId, req.body.name, req.body.userId);
+  res.status(200).json({ message: "Success" });
 }
 
 module.exports = {
