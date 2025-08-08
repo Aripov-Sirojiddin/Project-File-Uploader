@@ -21,7 +21,11 @@ export default function Root() {
   }, []);
 
   async function getUser(id) {
-    const response = await axios.get(`${import.meta.env.VITE_URL}/user/${id}`);
+    const response = await axios.get(`${import.meta.env.VITE_URL}/user/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     setUserInfo(response.data.user);
   }
 
