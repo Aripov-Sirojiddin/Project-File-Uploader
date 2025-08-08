@@ -14,6 +14,26 @@ const { body, validationResult } = require("express-validator");
 const authRouter = express.Router();
 require("dotenv").config();
 
+//JWT Authorization settings
+const options = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
+};
+
+passport.use(
+  new JwtStrategy(options, async (jwt_payload, done) => {
+    try {
+      const user = await userModel.getById(jwt_payload.user.id);
+      if (user) {
+        return done(null, user);
+      } else {
+        return done(null, false);
+      }
+    } catch (error) {
+      return done(error, false);
+    }
+  })
+);
 
 //Authentication Using Google
 passport.use(
