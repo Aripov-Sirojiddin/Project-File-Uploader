@@ -1,15 +1,19 @@
 const express = require("express");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oidc");
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
 const userModel = require("../models/user");
 const federatedCredentials = require("../models/federatedCredentials");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 const { body, validationResult } = require("express-validator");
 
 const authRouter = express.Router();
 require("dotenv").config();
+
 
 //Authentication Using Google
 passport.use(
@@ -170,13 +174,11 @@ authRouter.post("/login", (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: info.message });
     }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      delete user.password;
-      return res.status(200).json({ user });
+    delete user.password;
+    const token = jwt.sign({ user }, process.env.JWT_SECRET, {
+      expiresIn: "5h",
     });
+    res.json({ token });
   })(req, res, next);
 });
 

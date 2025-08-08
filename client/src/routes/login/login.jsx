@@ -12,7 +12,7 @@ export default function LoginPage() {
     await axios
       .post(`${import.meta.env.VITE_URL}/login`, data)
       .then((response) => {
-        console.log(response);
+        console.log(response.data.token);
       })
       .catch((error) => {
         if (error.response.status === 401) {
