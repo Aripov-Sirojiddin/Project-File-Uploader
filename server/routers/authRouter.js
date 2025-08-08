@@ -23,7 +23,7 @@ const options = {
 passport.use(
   new JwtStrategy(options, async (jwt_payload, done) => {
     try {
-      const user = await userModel.getById(jwt_payload.user.id);
+      const user = await userModel.getById(jwt_payload.id);
       if (user) {
         return done(null, user);
       } else {
@@ -195,7 +195,7 @@ authRouter.post("/login", (req, res, next) => {
       return res.status(401).json({ message: info.message });
     }
     delete user.password;
-    const token = jwt.sign({ user }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "5h",
     });
     res.json({ token });
@@ -214,7 +214,7 @@ authRouter.get("/oauth2/redirect/google", (req, res, next) => {
       return res.status(401).json({ message: info.message });
     }
     delete user.password;
-    const token = jwt.sign({ user }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "5h",
     });
     const script = `
