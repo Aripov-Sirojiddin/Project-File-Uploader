@@ -1,4 +1,14 @@
 const folderModel = require("../models/folders");
+const userModel = require("../models/user");
+
+async function getUser(req, res) {
+  const userId = req.params.userId;
+  const user = await userModel.getById(userId);
+  
+  delete user.password;
+
+  res.json({ user });
+}
 
 async function getAllFolders(req, res) {
   const authenticated = await req.isAuthenticated();
@@ -19,5 +29,6 @@ async function getAllFolders(req, res) {
 }
 
 module.exports = {
+  getUser,
   getAllFolders,
 };
