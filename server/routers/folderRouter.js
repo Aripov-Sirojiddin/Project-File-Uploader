@@ -15,6 +15,10 @@ folderRouter.get(
   passport.authenticate("jwt", { session: false }),
   openFolder
 );
-folderRouter.post("/create", createFolder);
+folderRouter.post(
+  "/create",
+  passport.authenticate("jwt", { session: false }),
+  createFolder
+);
 
 module.exports = folderRouter;
