@@ -5,14 +5,21 @@ import Modal from "react-modal";
 
 export default function Files({ token }) {
   const [user, setUser] = useState();
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [creatingFolder, setCreatingFolder] = useState(false);
+  const [showModal, setModalState] = useState(false);
+  const [error, setError] = useState("");
   const [parentId, setParentId] = useState(jwtDecode(token).id);
 
   const decodedToken = jwtDecode(token);
 
   useEffect(() => {
+    Modal.setAppElement("#files-page");
     getUser();
   }, []);
+
+  function closeModal() {
+    setModalState(false);
+  }
 
   async function getUser() {
     const response = await axios.get(
@@ -26,15 +33,17 @@ export default function Files({ token }) {
     setUser(response.data.user);
   }
 
-  function openModal() {
-    setIsOpen(true);
-  }
-  function closeModal() {
-    setIsOpen(false);
+  function createNewFolderForm() {
+    setCreatingFolder(true);
   }
 
   async function createFolder(form) {
     const folderName = Object.fromEntries(form).name;
+    if (folderName === "") {
+      setError("Folder Name can't be blank");
+      setModalState(true);
+      return;
+    }
     const response = await axios.post(
       `${import.meta.env.VITE_URL}/folder/create`,
       {
@@ -49,25 +58,29 @@ export default function Files({ token }) {
       }
     );
 
-    console.log(response.data);
-    //TODO : Flash message to user that folder was created successfully
-    closeModal();
+    setCreatingFolder(false);
   }
   return (
-    <>
+    <div id="files-page">
       <h1>Files</h1>
       {user && (
         <>
           <p>Welcome back {user.name}!</p>
-          <Modal isOpen={modalIsOpen}>
-            <form action={createFolder}>
-              <input type="text" name="name" id="name" />
-              <button type="submit">Create</button>
-            </form>
-          </Modal>
-          <a onClick={openModal}>Create folder</a>
+          {creatingFolder && (
+            <>
+              <Modal isOpen={showModal}>
+                <p>{error}</p>
+                <button onClick={closeModal}>Dismiss</button>
+              </Modal>
+              <form action={createFolder}>
+                <input type="text" name="name" id="name" />
+                <button type="submit">Create</button>
+              </form>
+            </>
+          )}
+          <a onClick={createNewFolderForm}>Create folder</a>
         </>
       )}
-    </>
+    </div>
   );
 }
