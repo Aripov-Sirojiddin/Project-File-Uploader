@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import Folder from "../../components/folder/folder";
+import styles from "./files.module.css";
 
 export default function Files({ token }) {
   const [user, setUser] = useState();
@@ -125,25 +126,27 @@ export default function Files({ token }) {
         <>
           <p>Welcome back {user.name}!</p>
           <a onClick={createNewFolderForm}>Create folder</a>
-          {foldersView}
-          {creatingFolder && (
-            <>
-              <Modal isOpen={showModal}>
-                <p>{error}</p>
-                <button onClick={closeModal}>Dismiss</button>
-              </Modal>
-              <form action={createFolder}>
-                <input
-                  type="text"
-                  name="folderName"
-                  id="folderName"
-                  ref={inputReference}
-                  value={folderName}
-                  onChange={handleOnChange}
-                />
-              </form>
-            </>
-          )}
+          <div className={styles.grid}>
+            {foldersView}
+            {creatingFolder && (
+              <>
+                <Modal isOpen={showModal}>
+                  <p>{error}</p>
+                  <button onClick={closeModal}>Dismiss</button>
+                </Modal>
+                <form action={createFolder}>
+                  <input
+                    type="text"
+                    name="folderName"
+                    id="folderName"
+                    ref={inputReference}
+                    value={folderName}
+                    onChange={handleOnChange}
+                  />
+                </form>
+              </>
+            )}
+          </div>
         </>
       )}
     </div>
