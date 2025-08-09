@@ -62,6 +62,7 @@ export default function Files({ token }) {
       }
     );
     setCreatingFolder(false);
+    setFolderName(() => "New Folder")
     setFolders((oldFolders) => [...oldFolders, response.data.folder]);
   }
   //Handles clicks outside the input field to submit form that creates folders.
@@ -83,7 +84,6 @@ export default function Files({ token }) {
   //Get all the folders associated with the user.
   const [folders, setFolders] = useState([]);
   async function getFolders() {
-    console.log(`Parent id : ${parentIdHistory}`);
     const response = await axios.get(
       `${import.meta.env.VITE_URL}/folder/${
         parentIdHistory[parentIdHistory.length - 1]
