@@ -1,11 +1,15 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
+import Modal from "react-modal";
 
 export default function Files({ token }) {
   const [user, setUser] = useState();
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [parentId, setParentId] = useState(jwtDecode(token).id);
 
   const decodedToken = jwtDecode(token);
+
   useEffect(() => {
     getUser();
   }, []);
@@ -22,8 +26,32 @@ export default function Files({ token }) {
     setUser(response.data.user);
   }
 
-  async function createFolder() {
-    
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  async function createFolder(form) {
+    const folderName = Object.fromEntries(form).name;
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL}/folder/create`,
+      {
+        name: folderName,
+        parentId: parentId,
+        userId: user.id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+    //TODO : Flash message to user that folder was created successfully
+    closeModal();
   }
   return (
     <>
@@ -31,7 +59,13 @@ export default function Files({ token }) {
       {user && (
         <>
           <p>Welcome back {user.name}!</p>
-          <a action={createFolder}>Create folder</a>
+          <Modal isOpen={modalIsOpen}>
+            <form action={createFolder}>
+              <input type="text" name="name" id="name" />
+              <button type="submit">Create</button>
+            </form>
+          </Modal>
+          <a onClick={openModal}>Create folder</a>
         </>
       )}
     </>
