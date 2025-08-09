@@ -8,8 +8,6 @@ export default function Files({ token }) {
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [showModal, setModalState] = useState(false);
   const [error, setError] = useState("");
-  const [folderName, setFolderName] = useState("New Folder");
-  const inputReference = useRef(null);
   const [parentId, setParentId] = useState(jwtDecode(token).id);
 
   const decodedToken = jwtDecode(token);
@@ -35,12 +33,36 @@ export default function Files({ token }) {
     setUser(response.data.user);
   }
 
+  //Submit form if the user clicks in the window
+  const [folderName, setFolderName] = useState("New Folder");
+  const inputReference = useRef(null);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (!creatingFolder || inputReference.current.contains(e.target)) {
+        return;
+      }
+      createFolder();
+    }
+
+    window.addEventListener("mousedown", handleClick);
+
+    return () => {
+      window.removeEventListener("mousedown", handleClick);
+    };
+  }, [creatingFolder]);
+
+  function handleOnChange(e) {
+    setFolderName(e.target.value);
+  }
   function createNewFolderForm() {
     setCreatingFolder(true);
   }
 
-  async function createFolder(form) {
-    if (folderName === "") {
+  async function createFolder() {
+    console.log(inputReference.current);
+    const name = inputReference.current.value;
+    if (name === "") {
       setError("Folder Name can't be blank");
       setModalState(true);
       return;
@@ -48,7 +70,7 @@ export default function Files({ token }) {
     const response = await axios.post(
       `${import.meta.env.VITE_URL}/folder/create`,
       {
-        name: folderName,
+        name: name,
         parentId: parentId,
         userId: user.id,
       },
@@ -58,30 +80,8 @@ export default function Files({ token }) {
         },
       }
     );
-
     setCreatingFolder(false);
   }
-
-  //Submit form if the user clicks in the window
-  function handleOnChange(e) {
-    setFolderName(e.target.value);
-  }
-
-  useEffect(() => {
-    function handleClick(e) {
-      if (!creatingFolder || inputReference.current.contains(e.target)) {
-        return;
-      }
-
-      createFolder(e);
-    }
-
-    window.addEventListener("mousedown", handleClick);
-
-    return () => {
-      window.removeEventListener("mousedown", handleClick);
-    };
-  }, [creatingFolder]);
 
   return (
     <div id="files-page">
