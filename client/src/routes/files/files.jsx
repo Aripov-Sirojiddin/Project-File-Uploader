@@ -12,11 +12,6 @@ export default function Files({ token }) {
 
   const decodedToken = jwtDecode(token);
 
-  useEffect(() => {
-    Modal.setAppElement("#files-page");
-    getUser();
-  }, []);
-
   function closeModal() {
     setModalState(false);
   }
@@ -36,21 +31,6 @@ export default function Files({ token }) {
   //Submit form if the user clicks in the window
   const [folderName, setFolderName] = useState("New Folder");
   const inputReference = useRef(null);
-
-  useEffect(() => {
-    function handleClick(e) {
-      if (!creatingFolder || inputReference.current.contains(e.target)) {
-        return;
-      }
-      createFolder();
-    }
-
-    window.addEventListener("mousedown", handleClick);
-
-    return () => {
-      window.removeEventListener("mousedown", handleClick);
-    };
-  }, [creatingFolder]);
 
   function handleOnChange(e) {
     setFolderName(e.target.value);
@@ -81,6 +61,41 @@ export default function Files({ token }) {
     );
     setCreatingFolder(false);
   }
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (!creatingFolder || inputReference.current.contains(e.target)) {
+        return;
+      }
+      createFolder();
+    }
+
+    window.addEventListener("mousedown", handleClick);
+
+    return () => {
+      window.removeEventListener("mousedown", handleClick);
+    };
+  }, [creatingFolder]);
+  
+  //Get all the folders associated with the user.
+  const [folders, setFolders] = useState([]);
+  async function getFolders() {
+    const response = await axios.get(
+      `${import.meta.env.VITE_URL}/${parentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+  }
+
+  useEffect(() => {
+    Modal.setAppElement("#files-page");
+    getUser();
+  }, []);
 
   return (
     <div id="files-page">
