@@ -101,9 +101,16 @@ export default function Files({ token }) {
   }, []);
 
   //Prepare folders
+  const [selectedFolderId, setSelectedFolderId] = useState("");
+
   const foldersView = folders.map((folder) => (
     <div key={folder.id}>
-      <Folder folderData={folder} setParentId={setParentId} />
+      <Folder
+        folderData={folder}
+        setParentId={setParentId}
+        selectedFolderId={selectedFolderId}
+        setSelectedFolderId={setSelectedFolderId}
+      />
     </div>
   ));
 

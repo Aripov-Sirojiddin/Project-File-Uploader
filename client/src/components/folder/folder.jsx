@@ -1,10 +1,19 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import styles from "./folder.module.css";
 
-export default function Folder({ key, folderData }) {
+export default function Folder({
+  key,
+  folderData,
+  selectedFolderId,
+  setSelectedFolderId,
+}) {
   const folderRef = useRef(null);
   useEffect(() => {
+    function removeFolderHighlight() {
+      setSelectedFolderId("");
+    }
     function highlightFolder() {
-      folderDiv.style.backgroundColor = "#00ffff";
+      setSelectedFolderId(folderData.id);
     }
 
     function openFolder() {
@@ -16,17 +25,24 @@ export default function Folder({ key, folderData }) {
     if (folderDiv) {
       folderDiv.addEventListener("click", highlightFolder);
       folderDiv.addEventListener("dblclick", openFolder);
+      window.addEventListener("mousedown", removeFolderHighlight);
     }
 
     return () => {
       if (folderDiv) {
         folderDiv.removeEventListener("click", highlightFolder);
         folderDiv.removeEventListener("dblclick", openFolder);
+        window.removeEventListener("mousedown", removeFolderHighlight);
       }
     };
   }, []);
   return (
-    <div ref={folderRef} key={folderData.id} id={`folder-${folderData.id}`}>
+    <div
+      ref={folderRef}
+      key={folderData.id}
+      id={`folder-${folderData.id}`}
+      className={selectedFolderId == folderData.id ? styles.selected : ""}
+    >
       <p>{folderData.name}</p>
     </div>
   );
