@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import Folder from "../../components/folder/folder";
 import styles from "./files.module.css";
+import folderStyle from "../../components/folder/folder.module.css";
 
 export default function Files({ token }) {
   const [user, setUser] = useState();
@@ -62,7 +63,7 @@ export default function Files({ token }) {
       }
     );
     setCreatingFolder(false);
-    setFolderName(() => "New Folder")
+    setFolderName(() => "New Folder");
     setFolders((oldFolders) => [...oldFolders, response.data.folder]);
   }
   //Handles clicks outside the input field to submit form that creates folders.
@@ -73,11 +74,20 @@ export default function Files({ token }) {
       }
       createFolder();
     }
-
+    function resizeBox(e) {
+      inputReference.current.style.height = "auto";
+      inputReference.current.style.height = inputReference.current.scrollHeight + "px";
+    }
+    if (creatingFolder) {
+      inputReference.current.focus();
+      inputReference.current.select();
+      window.addEventListener("input", resizeBox);
+    }
     window.addEventListener("mousedown", handleClick);
 
     return () => {
       window.removeEventListener("mousedown", handleClick);
+      window.removeEventListener("input", resizeBox);
     };
   }, [creatingFolder]);
 
@@ -144,22 +154,25 @@ export default function Files({ token }) {
           <div className={styles.grid}>
             {foldersView}
             {creatingFolder && (
-              <>
+              <div className={folderStyle.folder}>
                 <Modal isOpen={showModal}>
                   <p>{error}</p>
                   <button onClick={closeModal}>Dismiss</button>
                 </Modal>
+                <img src="/empty-folder.svg" alt="Empty folder icon." />
                 <form action={createFolder}>
-                  <input
+                  <textarea
                     type="text"
                     name="folderName"
+                    rows={1}
                     id="folderName"
                     ref={inputReference}
-                    value={folderName}
                     onChange={handleOnChange}
-                  />
+                    value={folderName}
+                  >
+                  </textarea>
                 </form>
-              </>
+              </div>
             )}
           </div>
         </>
