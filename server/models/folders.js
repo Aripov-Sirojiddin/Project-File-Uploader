@@ -1,10 +1,20 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
+async function getFileById(id) {
+  return await prisma.files.findFirst({
+    where: {
+      id: id,
+    },
+  });
+}
+
 async function create(parentId, name, userId) {
+  const doesParentExist = await getFileById(parentId);
+
   const folder = await prisma.files.create({
     data: {
-      parentId: parentId,
+      parentId: doesParentExist ? parentId : null,
       ownerId: userId,
       name: name,
       type: "folder",
@@ -17,10 +27,12 @@ async function create(parentId, name, userId) {
 }
 
 async function getAllByParentId(parentId, ownerId) {
+  const doesParentExist = await getFileById(parentId);
+
   const folders = await prisma.files.findMany({
     where: {
       ownerId: ownerId,
-      parentId: parentId,
+      parentId: doesParentExist ? parentId : null,
       type: "folder",
     },
   });

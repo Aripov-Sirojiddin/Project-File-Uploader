@@ -17,7 +17,7 @@ async function getFolderParentId(req, res) {
 }
 
 async function openFolder(req, res) {
-  const folderId = Number(req.params.folderId);
+  const folderId = req.params.folderId;
   const folders = await folderModel.getAllByParentId(folderId, req.user.id);
   if (folders) {
     res.status(200).json({ folders });

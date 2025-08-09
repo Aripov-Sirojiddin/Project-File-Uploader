@@ -22,7 +22,7 @@ export default function Folder({
     setIsEdit(true);
   }
   function openFolder() {
-    setParentId(() => folderData.id);
+    setParentId((history) => [...history, folderData.id]);
   }
 
   useEffect(() => {

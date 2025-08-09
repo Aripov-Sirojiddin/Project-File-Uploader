@@ -44,7 +44,7 @@ async function create(name, email, password = null) {
 async function find(id) {
   return await prisma.users.findFirst({
     where: {
-      id: Number(id),
+      id: id,
     },
   });
 }

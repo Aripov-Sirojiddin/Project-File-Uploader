@@ -3,7 +3,7 @@ const userModel = require("../models/user");
 
 async function getUser(req, res) {
   const userId = req.params.userid;
-  const user = await userModel.getById(Number(userId));
+  const user = await userModel.getById(userId);
 
   delete user.password;
 

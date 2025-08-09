@@ -10,7 +10,7 @@ export default function Files({ token }) {
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [showModal, setModalState] = useState(false);
   const [error, setError] = useState("");
-  const [parentId, setParentId] = useState(jwtDecode(token).id);
+  const [parentIdHistory, setParentId] = useState([jwtDecode(token).id]);
 
   const decodedToken = jwtDecode(token);
 
@@ -52,7 +52,7 @@ export default function Files({ token }) {
       `${import.meta.env.VITE_URL}/folder/create`,
       {
         name: name,
-        parentId: parentId,
+        parentId: parentIdHistory[parentIdHistory.length - 1],
         userId: user.id,
       },
       {
@@ -83,9 +83,11 @@ export default function Files({ token }) {
   //Get all the folders associated with the user.
   const [folders, setFolders] = useState([]);
   async function getFolders() {
-    console.log(`${import.meta.env.VITE_URL}/folder/${parentId}`);
+    console.log(`Parent id : ${parentIdHistory}`);
     const response = await axios.get(
-      `${import.meta.env.VITE_URL}/folder/${parentId}`,
+      `${import.meta.env.VITE_URL}/folder/${
+        parentIdHistory[parentIdHistory.length - 1]
+      }`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -109,7 +111,7 @@ export default function Files({ token }) {
     <div key={folder.id}>
       <Folder
         folderData={folder}
-        parentId={parentId}
+        parentId={parentIdHistory}
         setParentId={setParentId}
         selectedFolderId={selectedFolderId}
         setSelectedFolderId={setSelectedFolderId}
@@ -119,16 +121,26 @@ export default function Files({ token }) {
 
   useEffect(() => {
     getFolders();
-  }, [parentId]);
+  }, [parentIdHistory]);
+
+  function upAFolder() {
+    setParentId((history) => {
+      const newHistory = [...history];
+      if (newHistory.length > 1) {
+        newHistory.pop();
+      }
+      return newHistory;
+    });
+  }
 
   return (
     <div id="files-page">
       <h1>Files</h1>
-      {parentId}
       {user && (
         <>
           <p>Welcome back {user.name}!</p>
           <a onClick={createNewFolderForm}>Create folder</a>
+          <button onClick={upAFolder}>Up a folder</button>
           <div className={styles.grid}>
             {foldersView}
             {creatingFolder && (

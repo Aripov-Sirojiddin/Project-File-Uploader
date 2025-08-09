@@ -9,14 +9,14 @@ datasource db {
 }
 
 model federated_credentials {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid()) @db.Uuid
   user_id  String @db.VarChar(255)
   provider String @db.VarChar(255)
   subject  String @db.VarChar(255)
 }
 
 model users {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(uuid()) @db.Uuid
   name     String  @db.VarChar(255)
   email    String  @unique @db.VarChar(255)
   password String? @db.VarChar(255)
@@ -24,16 +24,16 @@ model users {
 }
 
 model files {
-  id   Int      @id @default(autoincrement())
+  id   String   @id @default(uuid()) @db.Uuid
   name String   @db.VarChar(255)
   size Int      @db.Integer
   date DateTime @db.Timestamp()
   type String   @db.VarChar(255)
 
-  ownerId Int
-  owner   users @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String @db.Uuid
+  owner   users  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  parentId Int
+  parentId String? @db.Uuid
   folder   files?  @relation("SubFolder", fields: [parentId], references: [id], onDelete: Cascade)
   folders  files[] @relation("SubFolder")
 }
