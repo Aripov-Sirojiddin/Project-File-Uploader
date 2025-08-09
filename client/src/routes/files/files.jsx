@@ -1,6 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 
 export default function Files({ token }) {
@@ -8,6 +8,8 @@ export default function Files({ token }) {
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [showModal, setModalState] = useState(false);
   const [error, setError] = useState("");
+  const [folderName, setFolderName] = useState("New Folder");
+  const inputReference = useRef(null);
   const [parentId, setParentId] = useState(jwtDecode(token).id);
 
   const decodedToken = jwtDecode(token);
@@ -38,7 +40,6 @@ export default function Files({ token }) {
   }
 
   async function createFolder(form) {
-    const folderName = Object.fromEntries(form).name;
     if (folderName === "") {
       setError("Folder Name can't be blank");
       setModalState(true);
@@ -60,6 +61,28 @@ export default function Files({ token }) {
 
     setCreatingFolder(false);
   }
+
+  //Submit form if the user clicks in the window
+  function handleOnChange(e) {
+    setFolderName(e.target.value);
+  }
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (!creatingFolder || inputReference.current.contains(e.target)) {
+        return;
+      }
+
+      createFolder(e);
+    }
+
+    window.addEventListener("mousedown", handleClick);
+
+    return () => {
+      window.removeEventListener("mousedown", handleClick);
+    };
+  }, [creatingFolder]);
+
   return (
     <div id="files-page">
       <h1>Files</h1>
@@ -73,8 +96,14 @@ export default function Files({ token }) {
                 <button onClick={closeModal}>Dismiss</button>
               </Modal>
               <form action={createFolder}>
-                <input type="text" name="name" id="name" />
-                <button type="submit">Create</button>
+                <input
+                  type="text"
+                  name="folderName"
+                  id="folderName"
+                  ref={inputReference}
+                  value={folderName}
+                  onChange={handleOnChange}
+                />
               </form>
             </>
           )}
