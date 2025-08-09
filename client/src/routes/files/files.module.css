@@ -1,4 +1,5 @@
 .grid {
   display: grid;
+  padding-inline: 0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
 }
