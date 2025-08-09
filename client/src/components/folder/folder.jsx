@@ -21,7 +21,7 @@ export default function Folder({
     setIsEdit(true);
   }
   function openFolder() {
-    console.log(folderData.name);
+    console.log(folderData);
   }
 
   useEffect(() => {

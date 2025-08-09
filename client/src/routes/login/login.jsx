@@ -21,7 +21,6 @@ export default function LoginPage() {
     await axios
       .post(`${import.meta.env.VITE_URL}/login`, data)
       .then((response) => {
-        console.log(response.data.token);
         localStorage.setItem("token", response.data.token);
         navigate("/");
       })
