@@ -60,7 +60,6 @@ export default function Files({ token }) {
   }
 
   async function createFolder() {
-    console.log(inputReference.current);
     const name = inputReference.current.value;
     if (name === "") {
       setError("Folder Name can't be blank");
