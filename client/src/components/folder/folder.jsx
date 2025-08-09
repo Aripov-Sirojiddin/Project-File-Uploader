@@ -47,6 +47,7 @@ export default function Folder({
       key={folderData.id}
       id={`folder-${folderData.id}`}
       className={`
+        ${styles.folder}        
         ${selectedFolderId == folderData.id && styles.selected}
       `}
     >

@@ -1,7 +1,25 @@
+.folder {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.7rem;
+  width: fit-content;
+  transition: all 0.1s ease-in-out;
+}
+
+.folder img {
+  width: 7rem;
+}
+
+.folder * {
+  text-align: center;
+}
+
 .selected {
-  background: cyan;
+  background: rgb(189, 223, 255);
 }
 
 .edit {
-  background: yellow;
+  background: rgb(0, 140, 255);
+  color: white;
+  border-radius: 0.5rem;
 }
