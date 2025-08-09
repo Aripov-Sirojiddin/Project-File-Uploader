@@ -76,12 +76,12 @@ export default function Files({ token }) {
       window.removeEventListener("mousedown", handleClick);
     };
   }, [creatingFolder]);
-  
+
   //Get all the folders associated with the user.
   const [folders, setFolders] = useState([]);
   async function getFolders() {
     const response = await axios.get(
-      `${import.meta.env.VITE_URL}/${parentId}`,
+      `${import.meta.env.VITE_URL}/folder/${parentId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -89,13 +89,18 @@ export default function Files({ token }) {
       }
     );
 
-    console.log(response.data);
+    setFolders(response.data.folders);
   }
 
   useEffect(() => {
     Modal.setAppElement("#files-page");
     getUser();
+    getFolders();
   }, []);
+
+  const foldersView = folders.map((folder) => (
+    <p key={folder.id}>{folder.name}</p>
+  ));
 
   return (
     <div id="files-page">
@@ -103,6 +108,8 @@ export default function Files({ token }) {
       {user && (
         <>
           <p>Welcome back {user.name}!</p>
+          <a onClick={createNewFolderForm}>Create folder</a>
+          {foldersView}
           {creatingFolder && (
             <>
               <Modal isOpen={showModal}>
@@ -121,7 +128,6 @@ export default function Files({ token }) {
               </form>
             </>
           )}
-          <a onClick={createNewFolderForm}>Create folder</a>
         </>
       )}
     </div>
