@@ -2,6 +2,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
+import Folder from "../../components/folder/folder";
 
 export default function Files({ token }) {
   const [user, setUser] = useState();
@@ -62,7 +63,7 @@ export default function Files({ token }) {
     setCreatingFolder(false);
     setFolders((oldFolders) => [...oldFolders, response.data.folder]);
   }
-
+  //Handles clicks outside the input field to submit form that creates folders.
   useEffect(() => {
     function handleClick(e) {
       if (!creatingFolder || inputReference.current.contains(e.target)) {
@@ -99,9 +100,16 @@ export default function Files({ token }) {
     getFolders();
   }, []);
 
+  //Prepare folders
   const foldersView = folders.map((folder) => (
-    <p key={folder.id}>{folder.name}</p>
+    <div key={folder.id}>
+      <Folder folderData={folder} setParentId={setParentId} />
+    </div>
   ));
+
+  useEffect(() => {
+    getFolders();
+  }, [parentId]);
 
   return (
     <div id="files-page">
