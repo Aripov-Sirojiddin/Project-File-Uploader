@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./folder.module.css";
 
 export default function Folder({
-  key,
   folderData,
+  parentId,
+  setParentId,
   selectedFolderId,
   setSelectedFolderId,
 }) {
@@ -21,7 +22,7 @@ export default function Folder({
     setIsEdit(true);
   }
   function openFolder() {
-    console.log(folderData);
+    setParentId(() => folderData.id);
   }
 
   useEffect(() => {
@@ -53,7 +54,9 @@ export default function Folder({
     >
       <img
         src={folderData.size === 0 ? "/empty-folder.svg" : "folder.svg"}
-        alt={folderData.size === 0 ? "Empty Folder icon" : "Folder with items icon"}
+        alt={
+          folderData.size === 0 ? "Empty Folder icon" : "Folder with items icon"
+        }
       />
       <p
         onClick={editFolder}

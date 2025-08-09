@@ -83,6 +83,7 @@ export default function Files({ token }) {
   //Get all the folders associated with the user.
   const [folders, setFolders] = useState([]);
   async function getFolders() {
+    console.log(`${import.meta.env.VITE_URL}/folder/${parentId}`);
     const response = await axios.get(
       `${import.meta.env.VITE_URL}/folder/${parentId}`,
       {
@@ -108,6 +109,7 @@ export default function Files({ token }) {
     <div key={folder.id}>
       <Folder
         folderData={folder}
+        parentId={parentId}
         setParentId={setParentId}
         selectedFolderId={selectedFolderId}
         setSelectedFolderId={setSelectedFolderId}
@@ -122,6 +124,7 @@ export default function Files({ token }) {
   return (
     <div id="files-page">
       <h1>Files</h1>
+      {parentId}
       {user && (
         <>
           <p>Welcome back {user.name}!</p>
