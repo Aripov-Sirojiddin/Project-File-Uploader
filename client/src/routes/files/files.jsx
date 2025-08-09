@@ -60,6 +60,7 @@ export default function Files({ token }) {
       }
     );
     setCreatingFolder(false);
+    setFolders((oldFolders) => [...oldFolders, response.data.folder]);
   }
 
   useEffect(() => {

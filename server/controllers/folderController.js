@@ -27,8 +27,12 @@ async function openFolder(req, res) {
 }
 
 async function createFolder(req, res) {
-  folderModel.create(req.body.parentId, req.body.name, req.body.userId);
-  res.status(200).json({ message: "Success" });
+  const newFolder = await folderModel.create(
+    req.body.parentId,
+    req.body.name,
+    req.body.userId
+  );
+  res.status(200).json({ message: "Success", folder: newFolder });
 }
 
 module.exports = {
