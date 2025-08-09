@@ -8,31 +8,36 @@ export default function Folder({
   setSelectedFolderId,
 }) {
   const folderRef = useRef(null);
+  const [isEdit, setIsEdit] = useState(false);
+
+  function resetFolder(e) {
+    setSelectedFolderId(-1);
+    setIsEdit(false);
+  }
+  function selectFolder() {
+    setSelectedFolderId(folderData.id);
+  }
+  function editFolder() {
+    setIsEdit(true);
+  }
+  function openFolder() {
+    console.log(folderData.name);
+  }
+
   useEffect(() => {
-    function removeFolderHighlight() {
-      setSelectedFolderId("");
-    }
-    function highlightFolder() {
-      setSelectedFolderId(folderData.id);
-    }
-
-    function openFolder() {
-      console.log(folderData.name);
-    }
-
     const folderDiv = folderRef.current;
 
     if (folderDiv) {
-      folderDiv.addEventListener("click", highlightFolder);
+      folderDiv.addEventListener("click", selectFolder);
       folderDiv.addEventListener("dblclick", openFolder);
-      window.addEventListener("mousedown", removeFolderHighlight);
+      window.addEventListener("mousedown", resetFolder);
     }
 
     return () => {
       if (folderDiv) {
-        folderDiv.removeEventListener("click", highlightFolder);
+        folderDiv.removeEventListener("click", selectFolder);
         folderDiv.removeEventListener("dblclick", openFolder);
-        window.removeEventListener("mousedown", removeFolderHighlight);
+        window.removeEventListener("mousedown", resetFolder);
       }
     };
   }, []);
@@ -41,9 +46,22 @@ export default function Folder({
       ref={folderRef}
       key={folderData.id}
       id={`folder-${folderData.id}`}
-      className={selectedFolderId == folderData.id ? styles.selected : ""}
+      className={`
+        ${selectedFolderId == folderData.id && styles.selected}
+      `}
     >
-      <p>{folderData.name}</p>
+      <img
+        src={folderData.size === 0 ? "/empty-folder.svg" : "folder.svg"}
+        alt={folderData.size === 0 ? "Empty Folder icon" : "Folder with items icon"}
+      />
+      <p
+        onClick={editFolder}
+        className={`
+        ${isEdit && styles.edit}
+      `}
+      >
+        {folderData.name}
+      </p>
     </div>
   );
 }
