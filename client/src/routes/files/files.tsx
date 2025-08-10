@@ -1,11 +1,11 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import Folder from "../../components/folder/folder";
 import styles from "./files.module.css";
 import CreateFolderView from "../../components/createFolderView/createFolderView";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
+import { useNavigate } from "react-router-dom";
 
 interface FolderType {
   id: string;
@@ -21,12 +21,15 @@ interface FilesProps {
   token: string;
 }
 
-interface tokenData {
-  user: { id: string; name: string; email: string };
-}
-
 const Files: React.FC<FilesProps> = ({ token }) => {
   const user = useSelector((state: RootState) => state.user.value);
+  const navigate = useNavigate();
+  
+  if (!user) {
+    navigate("/");
+    return;
+  }
+
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [parentIdHistory, setParentId] = useState<string[]>([user.id]);
 
