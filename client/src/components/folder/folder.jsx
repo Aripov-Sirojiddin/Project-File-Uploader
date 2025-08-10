@@ -25,6 +25,15 @@ export default function Folder({
     setParentId((history) => [...history, folderData.id]);
   }
 
+  function formatText(text) {
+    return text.split("\n").map((line) => (
+      <>
+        {line}
+        <br />
+      </>
+    ));
+  }
+
   useEffect(() => {
     const folderDiv = folderRef.current;
 
@@ -58,14 +67,7 @@ export default function Folder({
           folderData.size === 0 ? "Empty Folder icon" : "Folder with items icon"
         }
       />
-      <p
-        onClick={editFolder}
-        className={`
-        ${isEdit && styles.edit}
-      `}
-      >
-        {folderData.name}
-      </p>
+      <p onClick={editFolder}>{formatText(folderData.name)}</p>
     </div>
   );
 }

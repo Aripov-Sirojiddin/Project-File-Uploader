@@ -12,10 +12,13 @@ export default function CreateFolderView({
   setCreatingFolder,
   parentIdHistory,
   setFolders,
+  oldName,
 }) {
   const [error, setError] = useState("");
   const [showModal, setModalState] = useState(false);
-  const [folderName, setFolderName] = useState("New Folder");
+  const [folderName, setFolderName] = useState(
+    oldName ? oldName : "New Folder"
+  );
   const inputReference = useRef(null);
 
   useEffect(() => {
@@ -55,7 +58,7 @@ export default function CreateFolderView({
   }
 
   async function createFolder() {
-    const name = inputReference.current.value;
+    const name = inputReference.current.value.trim();
     if (name === "") {
       setError("Folder Name can't be blank");
       setModalState(true);
