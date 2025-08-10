@@ -3,8 +3,13 @@ import { useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "../../state/store";
+import { signin } from "../../state/user/userSlice";
 
-export default function LoginPage() {
+const LoginPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -15,13 +20,13 @@ export default function LoginPage() {
     }
   }, []);
 
-  async function loginUser(form) {
+  async function loginUser(form: FormData) {
     const data = Object.fromEntries(form);
 
     await axios
       .post(`${import.meta.env.VITE_URL}/login`, data)
       .then((response) => {
-        localStorage.setItem("token", response.data.token);
+        dispatch(signin(response.data.token));
         navigate("/");
       })
       .catch((error) => {
@@ -38,13 +43,14 @@ export default function LoginPage() {
     const top = window.innerHeight / 2 - height / 2;
 
     const url = `${import.meta.env.VITE_URL}/login/google`; // Your Express server URL
+
     window
       .open(
         url,
         "Google Login",
         `width=${width},height=${height},top=${top},left=${left}`
       )
-      .focus();
+      ?.focus();
 
     window.addEventListener("message", (event) => {
       if (event.origin !== import.meta.env.VITE_URL) {
@@ -53,7 +59,7 @@ export default function LoginPage() {
 
       const { token } = event.data;
       if (token) {
-        localStorage.setItem("token", token);
+        dispatch(signin(token));
         navigate("/");
       }
     });
@@ -78,8 +84,10 @@ export default function LoginPage() {
       </form>
       <div className={styles.horizontal_container}>
         <Link to="/signup">Sign Up</Link>
-        <Link onClick={openGoogleLogin}>Continue with google</Link>
+        <a onClick={openGoogleLogin}>Continue with google</a>
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

@@ -27,7 +27,6 @@ if (token) {
     console.error(`Failed to extract user from token: ${error}`);
   }
 }
-
 const initialState: UserState = {
   value: user,
 };
@@ -36,6 +35,14 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    signin: (state, action) => {
+      const token = action.payload;
+      localStorage.setItem("token", token);
+      const decodedToken = jwtDecode<Token>(token);
+      user = decodedToken.user;
+      user.token = token;
+      state.value = user;
+    },
     signout: (state) => {
       state.value = null;
       localStorage.removeItem("token");
@@ -43,5 +50,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { signout } = userSlice.actions;
+export const { signin, signout } = userSlice.actions;
 export default userSlice.reducer;
