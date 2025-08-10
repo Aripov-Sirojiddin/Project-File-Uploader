@@ -2,24 +2,28 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface EditFileState {
   id: string | null;
+  name: string;
 }
 
 const initialState: EditFileState = {
   id: null,
+  name: "New Folder",
 };
 
 const editFileSlice = createSlice({
   name: "editFile",
   initialState,
   reducers: {
-    setId: (state, action) => {
-      state.id = action.payload;
+    setEditFile: (state, action) => {
+      state.id = action.payload.id;
+      state.name = action.payload.name;
     },
-    resetId: (state) => {
+    resetEditFile: (state) => {
       state.id = null;
+      state.name = "";
     },
   },
 });
 
-export const { setId, resetId } = editFileSlice.actions;
+export const { setEditFile, resetEditFile } = editFileSlice.actions;
 export default editFileSlice.reducer;

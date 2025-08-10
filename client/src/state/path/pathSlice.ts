@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import getFiles from "../helpers/getFiles";
-import createOrUpdateFile from "../helpers/createOrUpdateFile";
+import createFile from "../helpers/createFile";
+import updateFileName from "../helpers/updateFileName";
 
 interface File {
   id: string;
@@ -41,6 +42,17 @@ const pathSlice = createSlice({
       })
       .addCase(createFileAsync.fulfilled, (state, action) => {
         state.files = [...state.files, action.payload.file];
+      })
+      .addCase(updateFileNameAsync.fulfilled, (state, action) => {
+        const files = [...state.files];
+        const updatedFile = action.payload.file;
+        files.forEach((file) => {
+          if (file.id === updatedFile.id) {
+            file.name = updatedFile.name;
+            return;
+          }
+        });
+        state.files = files;
       });
   },
 });
@@ -87,13 +99,26 @@ export const createFileAsync = createAsyncThunk<
     const state = getState();
     const absolutePath = state.path.absolutePath;
     const parentId = absolutePath[absolutePath.length - 1];
-    const response = await createOrUpdateFile(
-      fileName,
-      userId,
-      token,
-      parentId
-    );
+    const response = await createFile(fileName, userId, token, parentId);
 
+    return {
+      file: response.data.folder,
+    };
+  }
+);
+
+export const updateFileNameAsync = createAsyncThunk(
+  "path/updateFileNameAsync",
+  async ({
+    fileId,
+    newName,
+    token,
+  }: {
+    fileId: string | null;
+    newName: string;
+    token: string;
+  }) => {
+    const response = await updateFileName(fileId, newName, token);
     return {
       file: response.data.folder,
     };

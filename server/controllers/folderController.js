@@ -43,9 +43,7 @@ async function createFolder(req, res) {
 
 async function updateFolder(req, res) {
   const { folderId } = req.params;
-  console.log(folderId);
   const { name } = req.body;
-  console.log(req.body);
   try {
     const updatedFolder = await folderModel.updateName(folderId, name);
     if (updatedFolder.name === name) {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default async function createOrUpdateFile(
+export default async function createFile(
   fileName: string,
   userId: string,
   token: string,

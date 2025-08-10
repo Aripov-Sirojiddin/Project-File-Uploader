@@ -37,21 +37,28 @@ const Files: React.FC = () => {
 
   //Get all the folders associated with the user.
   const files = useSelector((state: RootState) => state.path.files);
-  
+
   useEffect(() => {
     dispatch(openFileAsync({ token, fileId: user.id }));
   }, []);
 
   //Prepare folders
   const [selectedFolderId, setSelectedFolderId] = useState("");
+  const editFileId = useSelector((state: RootState) => state.editFile.id);
 
   const foldersView = files.map((folder: FolderType) => (
     <div key={folder.id}>
-      <Folder
-        folderData={folder}
-        selectedFolderId={selectedFolderId}
-        setSelectedFolderId={setSelectedFolderId}
-      />
+      {editFileId === folder.id ? (
+        <CreateFolderView
+          setCreatingFolder={setCreatingFolder}
+        />
+      ) : (
+        <Folder
+          folderData={folder}
+          selectedFolderId={selectedFolderId}
+          setSelectedFolderId={setSelectedFolderId}
+        />
+      )}
     </div>
   ));
 
@@ -71,8 +78,6 @@ const Files: React.FC = () => {
             {foldersView}
             {creatingFolder && (
               <CreateFolderView
-                oldName=""
-                creatingFolder={creatingFolder}
                 setCreatingFolder={setCreatingFolder}
               />
             )}

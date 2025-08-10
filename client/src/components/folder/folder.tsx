@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styles from "./folder.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import type { AppDispatch } from "../../state/store";
 import { openFileAsync } from "../../state/path/pathSlice";
 import { useNavigate } from "react-router-dom";
-import { resetId, setId } from "../../state/editFile/editFileSlice";
+import { resetEditFile, setEditFile } from "../../state/editFile/editFileSlice";
 
 interface Folder {
   id: string;
@@ -37,18 +37,16 @@ const Folder: React.FC<FolderProps> = ({
   const dispatch = useDispatch<AppDispatch>();
 
   const folderRef = useRef<HTMLDivElement | null>(null);
-  const isEdit =
-    useSelector((state: RootState) => state.editFile.id) === folderData.id;
 
   function resetFolder() {
     setSelectedFolderId("");
-    dispatch(resetId());
   }
   function selectFolder() {
     setSelectedFolderId(folderData.id);
-    dispatch(setId(folderData.id));
   }
-  function editFolder() {}
+  function editFolder() {
+    dispatch(setEditFile({ id: folderData.id, name: folderData.name }));
+  }
   function openFolder() {
     if (!user) {
       navigate("/");
@@ -72,14 +70,12 @@ const Folder: React.FC<FolderProps> = ({
     if (folderDiv) {
       folderDiv.addEventListener("click", selectFolder);
       folderDiv.addEventListener("dblclick", openFolder);
-      window.addEventListener("mousedown", resetFolder);
     }
 
     return () => {
       if (folderDiv) {
         folderDiv.removeEventListener("click", selectFolder);
         folderDiv.removeEventListener("dblclick", openFolder);
-        window.removeEventListener("mousedown", resetFolder);
       }
     };
   }, []);
@@ -99,9 +95,7 @@ const Folder: React.FC<FolderProps> = ({
           folderData.size === 0 ? "Empty Folder icon" : "Folder with items icon"
         }
       />
-      <p onClick={editFolder} className={`${isEdit && styles.edit}`}>
-        {formatText(folderData.name)}
-      </p>
+      <p onClick={editFolder}>{formatText(folderData.name)}</p>
     </div>
   );
 };

@@ -22,7 +22,7 @@ folderRouter.post(
   createFolder
 );
 folderRouter.patch(
-  "/update/:folderId",
+  "/update/name/:folderId",
   passport.authenticate("jwt", { session: false }),
   updateFolder
 );
