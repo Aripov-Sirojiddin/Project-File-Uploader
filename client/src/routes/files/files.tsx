@@ -1,35 +1,41 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Folder from "../../components/folder/folder";
 import styles from "./files.module.css";
 import CreateFolderView from "../../components/createFolderView/createFolderView";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
 
-export default function Files({ token }) {
-  const [user, setUser] = useState();
+interface FolderType {
+  id: string;
+  name: string;
+  size: number;
+  date: number;
+  type: string;
+  ownerId: string;
+  parentId: string;
+}
+
+interface FilesProps {
+  token: string;
+}
+
+interface tokenData {
+  user: { id: string; name: string; email: string };
+}
+
+const Files: React.FC<FilesProps> = ({ token }) => {
+  const user = useSelector((state: RootState) => state.user.value);
   const [creatingFolder, setCreatingFolder] = useState(false);
-  const [parentIdHistory, setParentId] = useState([jwtDecode(token).id]);
-
-  const decodedToken = jwtDecode(token);
-
-  async function getUser() {
-    const response = await axios.get(
-      `${import.meta.env.VITE_URL}/user/${decodedToken.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    setUser(response.data.user);
-  }
+  const [parentIdHistory, setParentId] = useState<string[]>([user.id]);
 
   function createNewFolderForm() {
     setCreatingFolder(true);
   }
 
   //Get all the folders associated with the user.
-  const [folders, setFolders] = useState([]);
+  const [folders, setFolders] = useState<Folder[]>([]);
   async function getFolders() {
     const response = await axios.get(
       `${import.meta.env.VITE_URL}/folder/${
@@ -46,18 +52,16 @@ export default function Files({ token }) {
   }
 
   useEffect(() => {
-    getUser();
     getFolders();
   }, []);
 
   //Prepare folders
   const [selectedFolderId, setSelectedFolderId] = useState("");
 
-  const foldersView = folders.map((folder) => (
+  const foldersView = folders.map((folder: FolderType) => (
     <div key={folder.id}>
       <Folder
         folderData={folder}
-        parentId={parentIdHistory}
         setParentId={setParentId}
         selectedFolderId={selectedFolderId}
         setSelectedFolderId={setSelectedFolderId}
@@ -93,6 +97,7 @@ export default function Files({ token }) {
               <CreateFolderView
                 token={token}
                 user={user}
+                oldName=""
                 creatingFolder={creatingFolder}
                 setCreatingFolder={setCreatingFolder}
                 parentIdHistory={parentIdHistory}
@@ -104,4 +109,6 @@ export default function Files({ token }) {
       )}
     </div>
   );
-}
+};
+
+export default Files;

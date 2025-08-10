@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
-import Files from "./files/files";
+import Files from "./files/files.tsx";
 import Home from "./home/home";
 
 export default function Root() {

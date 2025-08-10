@@ -1,11 +1,35 @@
 import { useState } from "react";
-import Modal from "react-modal";
 import folderStyle from "../../components/folder/folder.module.css";
 import { useEffect } from "react";
 import { useRef } from "react";
 import axios from "axios";
 
-export default function CreateFolderView({
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+interface Folder {
+  id: string;
+  name: string;
+  size: number;
+  date: number;
+  type: string;
+  ownerId: string;
+  parentId: string;
+}
+
+interface CreateFolderViewProps {
+  token: string;
+  user: User;
+  parentIdHistory: string[];
+  creatingFolder: boolean;
+  oldName: string;
+  setCreatingFolder: React.Dispatch<React.SetStateAction<boolean>>;
+  setFolders: React.Dispatch<React.SetStateAction<Folder[]>>;
+}
+
+const CreateFolderView: React.FC<CreateFolderViewProps> = ({
   token,
   user,
   creatingFolder,
@@ -13,33 +37,36 @@ export default function CreateFolderView({
   parentIdHistory,
   setFolders,
   oldName,
-}) {
+}) => {
   const [error, setError] = useState("");
-  const [showModal, setModalState] = useState(false);
   const [folderName, setFolderName] = useState(
     oldName ? oldName : "New Folder"
   );
-  const inputReference = useRef(null);
+  const inputReference = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    Modal.setAppElement("#files-page");
-  }, []);
   //Handles clicks outside the input field to submit form that creates folders.
   useEffect(() => {
-    function handleClick(e) {
-      if (!creatingFolder || inputReference.current.contains(e.target)) {
-        return;
+    function handleClick(e: MouseEvent) {
+      const target = e.target as Node;
+      if (inputReference.current) {
+        if (!creatingFolder || inputReference.current.contains(target)) {
+          return;
+        }
       }
       createFolder();
     }
-    function resizeBox(e) {
-      inputReference.current.style.height = "auto";
-      inputReference.current.style.height =
-        inputReference.current.scrollHeight + "px";
+    function resizeBox() {
+      if (inputReference.current) {
+        inputReference.current.style.height = "auto";
+        inputReference.current.style.height =
+          inputReference.current.scrollHeight + "px";
+      }
     }
     if (creatingFolder) {
-      inputReference.current.focus();
-      inputReference.current.select();
+      if (inputReference.current) {
+        inputReference.current.focus();
+        inputReference.current.select();
+      }
       window.addEventListener("input", resizeBox);
     }
     window.addEventListener("mousedown", handleClick);
@@ -50,18 +77,18 @@ export default function CreateFolderView({
     };
   }, [creatingFolder]);
 
-  function handleOnChange(e) {
-    setFolderName(e.target.value);
-  }
-  function closeModal() {
-    setModalState(false);
+  function handleOnChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    if (e.target) {
+      setFolderName(e.target.value);
+    }
   }
 
   async function createFolder() {
-    const name = inputReference.current.value.trim();
+    const name = inputReference.current
+      ? inputReference.current.value.trim()
+      : "";
     if (name === "") {
       setError("Folder Name can't be blank");
-      setModalState(true);
       return;
     }
     const response = await axios.post(
@@ -79,19 +106,15 @@ export default function CreateFolderView({
     );
     setCreatingFolder(false);
     setFolderName(() => "New Folder");
-    setFolders((oldFolders) => [...oldFolders, response.data.folder]);
+    setFolders((oldFolders) => [...(oldFolders || []), response.data.folder]);
   }
 
   return (
     <div className={folderStyle.folder}>
-      <Modal isOpen={showModal}>
-        <p>{error}</p>
-        <button onClick={closeModal}>Dismiss</button>
-      </Modal>
+      {error.length > 0 && <p>{error}</p>}
       <img src="/empty-folder.svg" alt="Empty folder icon." />
       <form action={createFolder}>
         <textarea
-          type="text"
           name="folderName"
           rows={1}
           id="folderName"
@@ -102,4 +125,6 @@ export default function CreateFolderView({
       </form>
     </div>
   );
-}
+};
+
+export default CreateFolderView;

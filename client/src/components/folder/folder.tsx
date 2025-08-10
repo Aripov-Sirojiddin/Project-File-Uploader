@@ -1,18 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./folder.module.css";
 
-export default function Folder({
+interface Folder {
+  id: string;
+  name: string;
+  size: number;
+  date: number;
+  type: string;
+  ownerId: string;
+  parentId: string;
+}
+
+interface FolderProps {
+  folderData: Folder;
+  setParentId: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedFolderId: string;
+  setSelectedFolderId: React.Dispatch<React.SetStateAction<string>>;
+}
+const Folder: React.FC<FolderProps> = ({
   folderData,
-  parentId,
   setParentId,
   selectedFolderId,
   setSelectedFolderId,
-}) {
-  const folderRef = useRef(null);
+}) => {
+  const folderRef = useRef<HTMLDivElement | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
-  function resetFolder(e) {
-    setSelectedFolderId(-1);
+  function resetFolder() {
+    setSelectedFolderId("");
     setIsEdit(false);
   }
   function selectFolder() {
@@ -22,15 +37,15 @@ export default function Folder({
     setIsEdit(true);
   }
   function openFolder() {
-    setParentId((history) => [...history, folderData.id]);
+    setParentId((history) => [...(history || []), folderData.id]);
   }
 
-  function formatText(text) {
-    return text.split("\n").map((line) => (
-      <>
+  function formatText(text: string) {
+    return text.split("\n").map((line: string, i: number) => (
+      <span key={`${line}-${i}`}>
         {line}
         <br />
-      </>
+      </span>
     ));
   }
 
@@ -54,7 +69,7 @@ export default function Folder({
   return (
     <div
       ref={folderRef}
-      key={folderData.id}
+      key={`folder-${folderData.id}`}
       id={`folder-${folderData.id}`}
       className={`
         ${styles.folder}        
@@ -67,7 +82,11 @@ export default function Folder({
           folderData.size === 0 ? "Empty Folder icon" : "Folder with items icon"
         }
       />
-      <p onClick={editFolder}>{formatText(folderData.name)}</p>
+      <p onClick={editFolder} className={`${isEdit && styles.edit}`}>
+        {formatText(folderData.name)}
+      </p>
     </div>
   );
-}
+};
+
+export default Folder;
