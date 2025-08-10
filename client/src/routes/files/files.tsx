@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "../../state/store";
 import { type AppDispatch } from "../../state/store";
 import { useNavigate } from "react-router-dom";
-import { openFolderAsync } from "../../state/path/pathSlice";
+import { exitFolderAsync, openFolderAsync } from "../../state/path/pathSlice";
 
 interface FolderType {
   id: string;
@@ -55,6 +55,10 @@ const Files: React.FC = () => {
     </div>
   ));
 
+  //Leave current folder
+  function upAFolder() {
+    dispatch(exitFolderAsync({ token }));
+  }
   return (
     <div id="files-page">
       <h1>Files</h1>
@@ -62,7 +66,7 @@ const Files: React.FC = () => {
         <>
           <p>Welcome back {user.name}!</p>
           <a onClick={createNewFolderForm}>Create folder</a>
-          <button onClick={()=>alert("Ouch!")}>Up a folder</button>
+          <button onClick={upAFolder}>Up a folder</button>
           <div className={styles.grid}>
             {foldersView}
             {creatingFolder && (

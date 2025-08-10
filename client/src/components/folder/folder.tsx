@@ -33,7 +33,6 @@ const Folder: React.FC<FolderProps> = ({
     return;
   }
 
-  const path = useSelector((state: RootState) => state.path.absolutePath);
   const dispatch = useDispatch<AppDispatch>();
 
   const folderRef = useRef<HTMLDivElement | null>(null);
