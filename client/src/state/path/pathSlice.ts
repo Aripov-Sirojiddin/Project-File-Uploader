@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import getFiles from "../helpers/getFiles";
+import createOrUpdateFile from "../helpers/createOrUpdateFile";
 
 interface File {
   id: string;
@@ -37,6 +38,9 @@ const pathSlice = createSlice({
           state.absolutePath = [...state.absolutePath.slice(0, -1)];
         }
         state.files = action.payload.files;
+      })
+      .addCase(createFileAsync.fulfilled, (state, action) => {
+        state.files = [...state.files, action.payload.file];
       });
   },
 });
@@ -68,5 +72,31 @@ export const openFileAsync = createAsyncThunk(
     };
   }
 );
+export const createFileAsync = createAsyncThunk<
+  any,
+  {
+    fileName: string;
+    userId: string;
+    token: string;
+    type: string;
+  },
+  { state: RootState }
+>(
+  "path/createFileAsync",
+  async ({ fileName, userId, token, type }, { getState }) => {
+    const state = getState();
+    const absolutePath = state.path.absolutePath;
+    const parentId = absolutePath[absolutePath.length - 1];
+    const response = await createOrUpdateFile(
+      fileName,
+      userId,
+      token,
+      parentId
+    );
 
+    return {
+      file: response.data.folder,
+    };
+  }
+);
 export default pathSlice.reducer;

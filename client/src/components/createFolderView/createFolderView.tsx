@@ -2,10 +2,11 @@ import { useState } from "react";
 import folderStyle from "../../components/folder/folder.module.css";
 import { useEffect } from "react";
 import { useRef } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { type RootState } from "../../state/store";
+import { type AppDispatch } from "../../state/store";
 import { useNavigate } from "react-router-dom";
+import { createFileAsync } from "../../state/path/pathSlice";
 
 interface CreateFolderViewProps {
   creatingFolder: boolean;
@@ -19,8 +20,7 @@ const CreateFolderView: React.FC<CreateFolderViewProps> = ({
   oldName,
 }) => {
   const user = useSelector((state: RootState) => state.user.value);
-  const path = useSelector((state: RootState) => state.path.absolutePath);
-
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   if (!user) {
@@ -87,18 +87,14 @@ const CreateFolderView: React.FC<CreateFolderViewProps> = ({
       setError("Folder Name can't be blank");
       return;
     }
-    const response = await axios.post(
-      `${import.meta.env.VITE_URL}/folder/create`,
-      {
-        name: name,
-        parentId: path[path.length - 1],
+
+    dispatch(
+      createFileAsync({
+        fileName: name,
         userId: user.id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+        token: token,
+        type: "folder",
+      })
     );
     setCreatingFolder(false);
     setFolderName(() => "New Folder");
