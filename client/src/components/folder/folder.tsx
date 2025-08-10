@@ -3,7 +3,7 @@ import styles from "./folder.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import type { AppDispatch } from "../../state/store";
-import { openFolderAsync } from "../../state/path/pathSlice";
+import { openFileAsync } from "../../state/path/pathSlice";
 import { useNavigate } from "react-router-dom";
 
 interface Folder {
@@ -53,7 +53,7 @@ const Folder: React.FC<FolderProps> = ({
       navigate("/");
       return;
     }
-    dispatch(openFolderAsync({ token: user.token, folderId: folderData.id }));
+    dispatch(openFileAsync({ token: user.token, fileId: folderData.id }));
   }
 
   function formatText(text: string) {

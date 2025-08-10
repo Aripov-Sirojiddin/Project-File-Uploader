@@ -108,7 +108,7 @@ const CreateFolderView: React.FC<CreateFolderViewProps> = ({
     <div className={folderStyle.folder}>
       {error.length > 0 && <p>{error}</p>}
       <img src="/empty-folder.svg" alt="Empty folder icon." />
-      <form action={createFolder}>
+      <form>
         <textarea
           name="folderName"
           rows={1}

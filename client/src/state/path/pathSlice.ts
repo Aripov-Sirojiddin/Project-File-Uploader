@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import type { RootState } from "../store";
-import getFolders from "../helpers/getFolders";
+import getFiles from "../helpers/getFiles";
 
 interface File {
   id: string;
@@ -29,43 +28,43 @@ const pathSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(openFolderAsync.fulfilled, (state, action) => {
-        state.absolutePath = [...state.absolutePath, action.payload.folderId];
-        state.files = action.payload.folders;
+      .addCase(openFileAsync.fulfilled, (state, action) => {
+        state.absolutePath = [...state.absolutePath, action.payload.fileId];
+        state.files = action.payload.files;
       })
-      .addCase(exitFolderAsync.fulfilled, (state, action) => {
+      .addCase(exitFileAsync.fulfilled, (state, action) => {
         if (state.absolutePath.length > 2) {
           state.absolutePath = [...state.absolutePath.slice(0, -1)];
         }
-        state.files = action.payload.folders;
+        state.files = action.payload.files;
       });
   },
 });
 
-export const exitFolderAsync = createAsyncThunk<
+export const exitFileAsync = createAsyncThunk<
   any,
   { token: string },
   { state: RootState }
->("path/exitFolderAsync", async ({ token }, { getState }) => {
+>("path/exitFileAsync", async ({ token }, { getState }) => {
   const state = getState();
   const currentPath = state.path.absolutePath;
-  //Leave the current folder
-  const folderId = currentPath[currentPath.length - 2];
-
-  const response = await getFolders(token, folderId);
+  //Leave the current file
+  const fileId = currentPath[currentPath.length - 2];
+  const response = await getFiles(token, fileId);
   return {
-    folderId,
-    folders: response.data.folders,
+    fileId,
+    files: response.data.folders,
   };
 });
 
-export const openFolderAsync = createAsyncThunk(
-  "path/openFolderAsync",
-  async ({ token, folderId }: { token: string; folderId: string }) => {
-    const response = await getFolders(token, folderId);
+export const openFileAsync = createAsyncThunk(
+  "path/openFileAsync",
+  async ({ token, fileId }: { token: string; fileId: string }) => {
+    const response = await getFiles(token, fileId);
+
     return {
-      folderId,
-      folders: response.data.folders,
+      fileId,
+      files: response.data.folders,
     };
   }
 );

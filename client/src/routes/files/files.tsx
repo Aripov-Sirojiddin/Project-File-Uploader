@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "../../state/store";
 import { type AppDispatch } from "../../state/store";
 import { useNavigate } from "react-router-dom";
-import { exitFolderAsync, openFolderAsync } from "../../state/path/pathSlice";
+import { exitFileAsync, openFileAsync } from "../../state/path/pathSlice";
 
 interface FolderType {
   id: string;
@@ -36,16 +36,16 @@ const Files: React.FC = () => {
   }
 
   //Get all the folders associated with the user.
-  const folders = useSelector((state: RootState) => state.path.files);
+  const files = useSelector((state: RootState) => state.path.files);
 
   useEffect(() => {
-    dispatch(openFolderAsync({ token, folderId: user.id }));
+    dispatch(openFileAsync({ token, fileId: user.id }));
   }, []);
 
   //Prepare folders
   const [selectedFolderId, setSelectedFolderId] = useState("");
 
-  const foldersView = folders.map((folder: FolderType) => (
+  const foldersView = files.map((folder: FolderType) => (
     <div key={folder.id}>
       <Folder
         folderData={folder}
@@ -57,7 +57,7 @@ const Files: React.FC = () => {
 
   //Leave current folder
   function upAFolder() {
-    dispatch(exitFolderAsync({ token }));
+    dispatch(exitFileAsync({ token }));
   }
   return (
     <div id="files-page">
