@@ -109,7 +109,7 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
   }
 
   return (
-    <div className={folderStyle.folder}>
+    <div className={`${folderStyle.folder} ${folderStyle.selected}`}>
       {error.length > 0 && <p>{error}</p>}
       <img src="/empty-folder.svg" alt="Empty folder icon." />
       <form>
@@ -119,7 +119,7 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
           id="folderName"
           ref={inputReference}
           onChange={handleOnChange}
-          value={folderName ? folderName : "New Folder"}
+          value={folderName != null ? folderName : "New Folder"}
         ></textarea>
       </form>
     </div>

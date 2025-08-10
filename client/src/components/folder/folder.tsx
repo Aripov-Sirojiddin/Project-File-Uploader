@@ -38,9 +38,6 @@ const Folder: React.FC<FolderProps> = ({
 
   const folderRef = useRef<HTMLDivElement | null>(null);
 
-  function resetFolder() {
-    setSelectedFolderId("");
-  }
   function selectFolder() {
     setSelectedFolderId(folderData.id);
   }
