@@ -24,7 +24,7 @@ interface FilesProps {
 const Files: React.FC<FilesProps> = ({ token }) => {
   const user = useSelector((state: RootState) => state.user.value);
   const navigate = useNavigate();
-  
+
   if (!user) {
     navigate("/");
     return;
@@ -98,8 +98,6 @@ const Files: React.FC<FilesProps> = ({ token }) => {
             {foldersView}
             {creatingFolder && (
               <CreateFolderView
-                token={token}
-                user={user}
                 oldName=""
                 creatingFolder={creatingFolder}
                 setCreatingFolder={setCreatingFolder}

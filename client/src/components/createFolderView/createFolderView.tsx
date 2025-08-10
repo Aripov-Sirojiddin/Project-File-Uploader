@@ -3,12 +3,10 @@ import folderStyle from "../../components/folder/folder.module.css";
 import { useEffect } from "react";
 import { useRef } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import { useNavigate } from "react-router-dom";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
 interface Folder {
   id: string;
   name: string;
@@ -20,8 +18,6 @@ interface Folder {
 }
 
 interface CreateFolderViewProps {
-  token: string;
-  user: User;
   parentIdHistory: string[];
   creatingFolder: boolean;
   oldName: string;
@@ -30,14 +26,22 @@ interface CreateFolderViewProps {
 }
 
 const CreateFolderView: React.FC<CreateFolderViewProps> = ({
-  token,
-  user,
   creatingFolder,
   setCreatingFolder,
   parentIdHistory,
   setFolders,
   oldName,
 }) => {
+  const user = useSelector((state: RootState) => state.user.value);
+  const navigate = useNavigate();
+
+  if (!user) {
+    navigate("/");
+    return;
+  }
+
+  const token = user.token;
+
   const [error, setError] = useState("");
   const [folderName, setFolderName] = useState(
     oldName ? oldName : "New Folder"
@@ -84,6 +88,10 @@ const CreateFolderView: React.FC<CreateFolderViewProps> = ({
   }
 
   async function createFolder() {
+    if (!user) {
+      navigate("/");
+      return;
+    }
     const name = inputReference.current
       ? inputReference.current.value.trim()
       : "";
