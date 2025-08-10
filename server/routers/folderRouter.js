@@ -6,6 +6,7 @@ const {
   getFolderParentId,
   openFolder,
   createFolder,
+  updateFolder,
 } = require("../controllers/folderController");
 
 folderRouter.get("/create", getCreateView);
@@ -20,5 +21,6 @@ folderRouter.post(
   passport.authenticate("jwt", { session: false }),
   createFolder
 );
+folderRouter.patch("/update/:folderId", updateFolder);
 
 module.exports = folderRouter;

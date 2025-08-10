@@ -1,7 +1,7 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
-async function getFileById(id) {
+async function getById(id) {
   return await prisma.files.findFirst({
     where: {
       id: id,
@@ -10,7 +10,7 @@ async function getFileById(id) {
 }
 
 async function create(parentId, name, userId) {
-  const doesParentExist = await getFileById(parentId);
+  const doesParentExist = await getById(parentId);
 
   const folder = await prisma.files.create({
     data: {
@@ -26,8 +26,21 @@ async function create(parentId, name, userId) {
   return folder;
 }
 
+async function updateName(folderId, name) {
+  const folder = await prisma.files.update({
+    where: {
+      id: folderId,
+    },
+    data: {
+      name: name,
+    },
+  });
+
+  return folder;
+}
+
 async function getAllByParentId(parentId, ownerId) {
-  const doesParentExist = await getFileById(parentId);
+  const doesParentExist = await getById(parentId);
 
   const folders = await prisma.files.findMany({
     where: {
@@ -52,6 +65,7 @@ async function getParentId(id) {
 
 module.exports = {
   create,
+  updateName,
   getParentId,
   getAllByParentId,
 };

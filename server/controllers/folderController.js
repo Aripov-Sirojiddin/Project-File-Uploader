@@ -22,7 +22,7 @@ async function openFolder(req, res) {
   if (folders) {
     res.status(200).json({ folders });
   } else {
-    res.status(401).json({ error: "Something went wrong on our end..." });
+    res.status(501).json({ error: "Something went wrong on our end..." });
   }
 }
 
@@ -32,7 +32,32 @@ async function createFolder(req, res) {
     req.body.name,
     req.body.userId
   );
-  res.status(200).json({ message: "Success", folder: newFolder });
+  if (newFolder) {
+    res.status(200).json({ message: "Success", folder: newFolder });
+  } else {
+    res.status(501).json({
+      error: "Couldn't create folder, something went wrong on our end.",
+    });
+  }
+}
+
+async function updateFolder(req, res) {
+  const { folderId } = req.params;
+  console.log(folderId);
+  const { name } = req.body;
+  console.log(req.body);
+  try {
+    const updatedFolder = await folderModel.updateName(folderId, name);
+    if (updatedFolder.name === name) {
+      res.status(200).json({ message: "Success", folder: updatedFolder });
+    } else {
+      res.status(501).json({
+        error: "Couldn't update folder, something went wrong on our end.",
+      });
+    }
+  } catch (e) {
+    res.status(501).json({ error: e });
+  }
 }
 
 module.exports = {
@@ -40,4 +65,5 @@ module.exports = {
   openFolder,
   getFolderParentId,
   createFolder,
+  updateFolder,
 };
