@@ -21,6 +21,10 @@ folderRouter.post(
   passport.authenticate("jwt", { session: false }),
   createFolder
 );
-folderRouter.patch("/update/:folderId", updateFolder);
+folderRouter.patch(
+  "/update/:folderId",
+  passport.authenticate("jwt", { session: false }),
+  updateFolder
+);
 
 module.exports = folderRouter;
