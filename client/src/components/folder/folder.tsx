@@ -5,6 +5,7 @@ import type { RootState } from "../../state/store";
 import type { AppDispatch } from "../../state/store";
 import { openFileAsync } from "../../state/path/pathSlice";
 import { useNavigate } from "react-router-dom";
+import { resetId, setId } from "../../state/editFile/editFileSlice";
 
 interface Folder {
   id: string;
@@ -36,18 +37,18 @@ const Folder: React.FC<FolderProps> = ({
   const dispatch = useDispatch<AppDispatch>();
 
   const folderRef = useRef<HTMLDivElement | null>(null);
-  const [isEdit, setIsEdit] = useState(false);
+  const isEdit =
+    useSelector((state: RootState) => state.editFile.id) === folderData.id;
 
   function resetFolder() {
     setSelectedFolderId("");
-    setIsEdit(false);
+    dispatch(resetId());
   }
   function selectFolder() {
     setSelectedFolderId(folderData.id);
+    dispatch(setId(folderData.id));
   }
-  function editFolder() {
-    setIsEdit(true);
-  }
+  function editFolder() {}
   function openFolder() {
     if (!user) {
       navigate("/");

@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
   }, []);
 
   async function loginUser(form: FormData) {
-    const data = Object.fromEntries(form);
+    const data = Object.fromEntries(form); 
 
     await axios
       .post(`${import.meta.env.VITE_URL}/login`, data)

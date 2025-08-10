@@ -37,7 +37,7 @@ const Files: React.FC = () => {
 
   //Get all the folders associated with the user.
   const files = useSelector((state: RootState) => state.path.files);
-
+  
   useEffect(() => {
     dispatch(openFileAsync({ token, fileId: user.id }));
   }, []);
