@@ -7,32 +7,20 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { useNavigate } from "react-router-dom";
 
-interface Folder {
-  id: string;
-  name: string;
-  size: number;
-  date: number;
-  type: string;
-  ownerId: string;
-  parentId: string;
-}
-
 interface CreateFolderViewProps {
-  parentIdHistory: string[];
   creatingFolder: boolean;
   oldName: string;
   setCreatingFolder: React.Dispatch<React.SetStateAction<boolean>>;
-  setFolders: React.Dispatch<React.SetStateAction<Folder[]>>;
 }
 
 const CreateFolderView: React.FC<CreateFolderViewProps> = ({
   creatingFolder,
   setCreatingFolder,
-  parentIdHistory,
-  setFolders,
   oldName,
 }) => {
   const user = useSelector((state: RootState) => state.user.value);
+  const path = useSelector((state: RootState) => state.path.absolutePath);
+
   const navigate = useNavigate();
 
   if (!user) {
@@ -103,7 +91,7 @@ const CreateFolderView: React.FC<CreateFolderViewProps> = ({
       `${import.meta.env.VITE_URL}/folder/create`,
       {
         name: name,
-        parentId: parentIdHistory[parentIdHistory.length - 1],
+        parentId: path[path.length - 1],
         userId: user.id,
       },
       {
@@ -114,7 +102,6 @@ const CreateFolderView: React.FC<CreateFolderViewProps> = ({
     );
     setCreatingFolder(false);
     setFolderName(() => "New Folder");
-    setFolders((oldFolders) => [...(oldFolders || []), response.data.folder]);
   }
 
   return (

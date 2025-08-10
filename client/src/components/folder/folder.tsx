@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./folder.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import type { AppDispatch } from "../../state/store";
+import { openFolderAsync } from "../../state/path/pathSlice";
+import { useNavigate } from "react-router-dom";
 
 interface Folder {
   id: string;
@@ -13,16 +18,24 @@ interface Folder {
 
 interface FolderProps {
   folderData: Folder;
-  setParentId: React.Dispatch<React.SetStateAction<string[]>>;
   selectedFolderId: string;
   setSelectedFolderId: React.Dispatch<React.SetStateAction<string>>;
 }
 const Folder: React.FC<FolderProps> = ({
   folderData,
-  setParentId,
   selectedFolderId,
   setSelectedFolderId,
 }) => {
+  const user = useSelector((state: RootState) => state.user.value);
+  const navigate = useNavigate();
+  if (!user) {
+    navigate("/");
+    return;
+  }
+
+  const path = useSelector((state: RootState) => state.path.absolutePath);
+  const dispatch = useDispatch<AppDispatch>();
+
   const folderRef = useRef<HTMLDivElement | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
@@ -37,7 +50,11 @@ const Folder: React.FC<FolderProps> = ({
     setIsEdit(true);
   }
   function openFolder() {
-    setParentId((history) => [...(history || []), folderData.id]);
+    if (!user) {
+      navigate("/");
+      return;
+    }
+    dispatch(openFolderAsync({ token: user.token, folderId: folderData.id }));
   }
 
   function formatText(text: string) {
