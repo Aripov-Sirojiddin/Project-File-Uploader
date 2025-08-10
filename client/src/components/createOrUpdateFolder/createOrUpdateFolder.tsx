@@ -12,11 +12,11 @@ import {
 } from "../../state/path/pathSlice";
 import { resetEditFile, setEditFile } from "../../state/editFile/editFileSlice";
 
-interface CreateFolderViewProps {
+interface CreateOrUpdateFolderViewProps {
   setCreatingFolder: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CreateFolderView: React.FC<CreateFolderViewProps> = ({
+const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
   setCreatingFolder,
 }) => {
   const user = useSelector((state: RootState) => state.user.value);
@@ -126,4 +126,4 @@ const CreateFolderView: React.FC<CreateFolderViewProps> = ({
   );
 };
 
-export default CreateFolderView;
+export default CreateOrUpdateFolder;

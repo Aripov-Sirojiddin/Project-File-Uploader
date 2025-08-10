@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import Folder from "../../components/folder/folder";
 import styles from "./files.module.css";
-import CreateFolderView from "../../components/createFolderView/createFolderView";
 import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "../../state/store";
 import { type AppDispatch } from "../../state/store";
 import { useNavigate } from "react-router-dom";
 import { exitFileAsync, openFileAsync } from "../../state/path/pathSlice";
+import CreateOrUpdateFolder from "../../components/createOrUpdateFolder/createOrUpdateFolder";
 
 interface FolderType {
   id: string;
@@ -49,9 +49,7 @@ const Files: React.FC = () => {
   const foldersView = files.map((folder: FolderType) => (
     <div key={folder.id}>
       {editFileId === folder.id ? (
-        <CreateFolderView
-          setCreatingFolder={setCreatingFolder}
-        />
+        <CreateOrUpdateFolder setCreatingFolder={setCreatingFolder} />
       ) : (
         <Folder
           folderData={folder}
@@ -77,9 +75,7 @@ const Files: React.FC = () => {
           <div className={styles.grid}>
             {foldersView}
             {creatingFolder && (
-              <CreateFolderView
-                setCreatingFolder={setCreatingFolder}
-              />
+              <CreateOrUpdateFolder setCreatingFolder={setCreatingFolder} />
             )}
           </div>
         </>
