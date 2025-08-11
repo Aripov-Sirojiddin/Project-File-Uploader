@@ -4,7 +4,8 @@ export default async function createFile(
   fileName: string,
   userId: string,
   token: string,
-  parentId: string
+  parentId: string,
+  type: string
 ) {
   return await axios.post(
     `${import.meta.env.VITE_URL}/folder/create`,
@@ -12,6 +13,7 @@ export default async function createFile(
       name: fileName,
       parentId: parentId,
       userId: userId,
+      type: type,
     },
     {
       headers: {

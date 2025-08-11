@@ -100,11 +100,11 @@ export const createFileAsync = createAsyncThunk<
   { state: RootState }
 >(
   "path/createFileAsync",
-  async ({ fileName, userId, token, type }, { getState }) => {
+  async ({ fileName, userId, token, type="folder" }, { getState }) => {
     const state = getState();
     const absolutePath = state.path.absolutePath;
     const parentId = absolutePath[absolutePath.length - 1];
-    const response = await createFile(fileName, userId, token, parentId);
+    const response = await createFile(fileName, userId, token, parentId, type);
 
     return {
       file: response.data.folder,
