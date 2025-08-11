@@ -27,7 +27,12 @@ const initialState: PathState = {
 const pathSlice = createSlice({
   name: "path",
   initialState,
-  reducers: {},
+  reducers: {
+    removeStoredFiles: (state) => {
+      state.absolutePath = initialState.absolutePath;
+      state.files = initialState.files;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(openFileAsync.fulfilled, (state, action) => {
@@ -124,4 +129,5 @@ export const updateFileNameAsync = createAsyncThunk(
     };
   }
 );
+export const { removeStoredFiles } = pathSlice.actions;
 export default pathSlice.reducer;
