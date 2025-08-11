@@ -5,37 +5,25 @@ import type { RootState } from "../../state/store";
 import type { AppDispatch } from "../../state/store";
 import { openFileAsync } from "../../state/path/pathSlice";
 import { useNavigate } from "react-router-dom";
-import {
-  resetSelectedFile,
-  setSelectedFile,
-} from "../../state/selectedFile/selectedFileSlice";
-
-interface Folder {
-  id: string;
-  name: string;
-  size: number;
-  date: number;
-  type: string;
-  ownerId: string;
-  parentId: string;
-}
+import { setSelectedFile } from "../../state/selectedFile/selectedFileSlice";
+import { type File } from "../../state/path/pathSlice";
 
 interface FolderProps {
-  folderData: Folder;
+  folderData: File;
 }
 
 const Folder: React.FC<FolderProps> = ({ folderData }) => {
   const user = useSelector((state: RootState) => state.user.value);
-  const selectedFile = useSelector((state: RootState) => state.selectedFile);
   const navigate = useNavigate();
+
   if (!user) {
     navigate("/");
     return;
   }
 
-  const dispatch = useDispatch<AppDispatch>();
-
+  const selectedFile = useSelector((state: RootState) => state.selectedFile);
   const folderRef = useRef<HTMLDivElement | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   function selectFolder() {
     dispatch(
@@ -54,9 +42,6 @@ const Folder: React.FC<FolderProps> = ({ folderData }) => {
     }
     dispatch(openFileAsync({ token: user.token, fileId: folderData.id }));
   }
-  function resetFolder() {
-    dispatch(resetSelectedFile());
-  }
 
   function formatText(text: string) {
     return text.split("\n").map((line: string, i: number) => (
@@ -73,14 +58,12 @@ const Folder: React.FC<FolderProps> = ({ folderData }) => {
     if (folderDiv) {
       folderDiv.addEventListener("click", selectFolder);
       folderDiv.addEventListener("dblclick", openFolder);
-      window.addEventListener("mousedown", resetFolder);
     }
 
     return () => {
       if (folderDiv) {
         folderDiv.removeEventListener("click", selectFolder);
         folderDiv.removeEventListener("dblclick", openFolder);
-        window.removeEventListener("mousedown", resetFolder);
       }
     };
   }, []);

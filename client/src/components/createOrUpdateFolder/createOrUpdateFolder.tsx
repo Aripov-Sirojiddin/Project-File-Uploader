@@ -15,25 +15,23 @@ import {
   setSelectedFile,
 } from "../../state/selectedFile/selectedFileSlice";
 
-interface CreateOrUpdateFolderViewProps {
+interface CreateOrUpdateFolderProps {
   setCreatingFolder: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
+const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderProps> = ({
   setCreatingFolder,
 }) => {
   const user = useSelector((state: RootState) => state.user.value);
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const selectedFile = useSelector((state: RootState) => state.selectedFile);
-
   if (!user) {
     navigate("/");
     return;
   }
 
+  const dispatch = useDispatch<AppDispatch>();
+  const selectedFile = useSelector((state: RootState) => state.selectedFile);
   const token = user.token;
-
   const [error, setError] = useState("");
   const inputReference = useRef<HTMLTextAreaElement>(null);
 
@@ -73,7 +71,11 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
   function handleOnChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     if (e.target) {
       dispatch(
-        setSelectedFile({ id: selectedFile.id, name: e.target.value, edit: true })
+        setSelectedFile({
+          id: selectedFile.id,
+          name: e.target.value,
+          edit: true,
+        })
       );
     }
   }

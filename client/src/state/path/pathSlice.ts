@@ -4,7 +4,7 @@ import getFiles from "../helpers/getFiles";
 import createFile from "../helpers/createFile";
 import updateFileName from "../helpers/updateFileName";
 
-interface File {
+export interface File {
   id: string;
   name: string;
   size: number;
