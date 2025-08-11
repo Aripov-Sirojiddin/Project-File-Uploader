@@ -67,12 +67,12 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className={styles.vertical_container}>
-      <Outlet />
       {error && (
         <div className={styles.error_box}>
           <p>{error}</p>
         </div>
       )}
+      <h1>Login</h1>
       <form action={loginUser} className={styles.vertical_container}>
         <input
           type="text"

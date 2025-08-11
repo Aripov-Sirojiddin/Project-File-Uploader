@@ -25,6 +25,8 @@ if (token) {
     if (decodedToken.exp > Date.now() / 1000) {
       user = decodedToken.user;
       user.token = token;
+    } else {
+      localStorage.removeItem("token");
     }
   } catch (error) {
     console.error(`Failed to extract user from token: ${error}`);
@@ -46,6 +48,8 @@ const userSlice = createSlice({
         user = decodedToken.user;
         user.token = token;
         state.value = user;
+      } else {
+        localStorage.removeItem("token");
       }
     },
     signout: (state) => {
