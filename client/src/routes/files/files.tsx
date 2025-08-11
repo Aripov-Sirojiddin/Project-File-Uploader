@@ -7,6 +7,7 @@ import { type AppDispatch } from "../../state/store";
 import { useNavigate } from "react-router-dom";
 import { exitFileAsync, openFileAsync } from "../../state/path/pathSlice";
 import CreateOrUpdateFolder from "../../components/createOrUpdateFolder/createOrUpdateFolder";
+import { resetSelectedFile } from "../../state/selectedFile/selectedFileSlice";
 
 const Files: React.FC = () => {
   const user = useSelector((state: RootState) => state.user.value);
@@ -22,6 +23,7 @@ const Files: React.FC = () => {
   const [creatingFolder, setCreatingFolder] = useState(false);
 
   function createNewFolderForm() {
+    dispatch(resetSelectedFile());
     setCreatingFolder(true);
   }
 
@@ -32,7 +34,7 @@ const Files: React.FC = () => {
   function upAFolder() {
     dispatch(exitFileAsync({ token }));
   }
-  
+
   return (
     <div id="files-page">
       <h1>Files</h1>

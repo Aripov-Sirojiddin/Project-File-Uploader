@@ -5,7 +5,10 @@ import type { RootState } from "../../state/store";
 import type { AppDispatch } from "../../state/store";
 import { openFileAsync } from "../../state/path/pathSlice";
 import { useNavigate } from "react-router-dom";
-import { setSelectedFile } from "../../state/selectedFile/selectedFileSlice";
+import {
+  resetSelectedFile,
+  setSelectedFile,
+} from "../../state/selectedFile/selectedFileSlice";
 import { type File } from "../../state/path/pathSlice";
 
 interface FolderProps {
@@ -26,11 +29,13 @@ const Folder: React.FC<FolderProps> = ({ folderData }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   function selectFolder() {
+    dispatch(resetSelectedFile());
     dispatch(
       setSelectedFile({ id: folderData.id, name: folderData.name, edit: false })
     );
   }
   function editFolder() {
+    dispatch(resetSelectedFile());
     dispatch(
       setSelectedFile({ id: folderData.id, name: folderData.name, edit: true })
     );
