@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 
 interface Token {
   user: User;
+  exp: number;
 }
 interface User {
   id: string;
@@ -21,8 +22,10 @@ let user: User | null = null;
 if (token) {
   try {
     const decodedToken = jwtDecode<Token>(token);
-    user = decodedToken.user;
-    user.token = token;
+    if (decodedToken.exp > Date.now() / 1000) {
+      user = decodedToken.user;
+      user.token = token;
+    }
   } catch (error) {
     console.error(`Failed to extract user from token: ${error}`);
   }
@@ -39,9 +42,11 @@ const userSlice = createSlice({
       const token = action.payload;
       localStorage.setItem("token", token);
       const decodedToken = jwtDecode<Token>(token);
-      user = decodedToken.user;
-      user.token = token;
-      state.value = user;
+      if (decodedToken.exp > Date.now() / 1000) {
+        user = decodedToken.user;
+        user.token = token;
+        state.value = user;
+      }
     },
     signout: (state) => {
       state.value = null;

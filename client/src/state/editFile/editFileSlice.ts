@@ -7,7 +7,7 @@ interface EditFileState {
 
 const initialState: EditFileState = {
   id: null,
-  name: "",
+  name: "New Folder",
 };
 
 const editFileSlice = createSlice({
@@ -20,7 +20,7 @@ const editFileSlice = createSlice({
     },
     resetEditFile: (state) => {
       state.id = null;
-      state.name = "";
+      state.name = "New Folder";
     },
   },
 });

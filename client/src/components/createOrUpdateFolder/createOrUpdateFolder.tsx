@@ -119,7 +119,7 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
           id="folderName"
           ref={inputReference}
           onChange={handleOnChange}
-          value={folderName != null ? folderName : "New Folder"}
+          value={folderName}
         ></textarea>
       </form>
     </div>
