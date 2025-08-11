@@ -10,7 +10,10 @@ import {
   createFileAsync,
   updateFileNameAsync,
 } from "../../state/path/pathSlice";
-import { resetEditFile, setEditFile } from "../../state/editFile/editFileSlice";
+import {
+  resetSelectedFile,
+  setSelectedFile,
+} from "../../state/selectedFile/selectedFileSlice";
 
 interface CreateOrUpdateFolderViewProps {
   setCreatingFolder: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,8 +25,8 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
   const user = useSelector((state: RootState) => state.user.value);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const fileId = useSelector((state: RootState) => state.editFile.id);
-  const folderName = useSelector((state: RootState) => state.editFile.name);
+  const selectedFile = useSelector((state: RootState) => state.selectedFile);
+
   if (!user) {
     navigate("/");
     return;
@@ -42,6 +45,7 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
         return;
       }
       createFolder();
+      dispatch(resetSelectedFile());
     }
     function resizeBox() {
       if (inputReference.current) {
@@ -68,7 +72,9 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
 
   function handleOnChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     if (e.target) {
-      dispatch(setEditFile({ id: fileId, name: e.target.value }));
+      dispatch(
+        setSelectedFile({ id: selectedFile.id, name: e.target.value, edit: true })
+      );
     }
   }
 
@@ -85,15 +91,14 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
       return;
     }
     //If fileId is present means we are updating
-    if (fileId) {
+    if (selectedFile.id) {
       dispatch(
         updateFileNameAsync({
-          fileId: fileId,
+          fileId: selectedFile.id,
           newName: name,
           token: token,
         })
       );
-      dispatch(resetEditFile());
     } else {
       //If fileId is not present we are creating
       dispatch(
@@ -119,7 +124,7 @@ const CreateOrUpdateFolder: React.FC<CreateOrUpdateFolderViewProps> = ({
           id="folderName"
           ref={inputReference}
           onChange={handleOnChange}
-          value={folderName}
+          value={selectedFile.name}
         ></textarea>
       </form>
     </div>

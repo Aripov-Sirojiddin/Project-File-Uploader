@@ -5,7 +5,10 @@ import type { RootState } from "../../state/store";
 import type { AppDispatch } from "../../state/store";
 import { openFileAsync } from "../../state/path/pathSlice";
 import { useNavigate } from "react-router-dom";
-import { resetEditFile, setEditFile } from "../../state/editFile/editFileSlice";
+import {
+  resetSelectedFile,
+  setSelectedFile,
+} from "../../state/selectedFile/selectedFileSlice";
 
 interface Folder {
   id: string;
@@ -19,15 +22,11 @@ interface Folder {
 
 interface FolderProps {
   folderData: Folder;
-  selectedFolderId: string;
-  setSelectedFolderId: React.Dispatch<React.SetStateAction<string>>;
 }
-const Folder: React.FC<FolderProps> = ({
-  folderData,
-  selectedFolderId,
-  setSelectedFolderId,
-}) => {
+
+const Folder: React.FC<FolderProps> = ({ folderData }) => {
   const user = useSelector((state: RootState) => state.user.value);
+  const selectedFile = useSelector((state: RootState) => state.selectedFile);
   const navigate = useNavigate();
   if (!user) {
     navigate("/");
@@ -39,10 +38,14 @@ const Folder: React.FC<FolderProps> = ({
   const folderRef = useRef<HTMLDivElement | null>(null);
 
   function selectFolder() {
-    setSelectedFolderId(folderData.id);
+    dispatch(
+      setSelectedFile({ id: folderData.id, name: folderData.name, edit: false })
+    );
   }
   function editFolder() {
-    dispatch(setEditFile({ id: folderData.id, name: folderData.name }));
+    dispatch(
+      setSelectedFile({ id: folderData.id, name: folderData.name, edit: true })
+    );
   }
   function openFolder() {
     if (!user) {
@@ -50,6 +53,9 @@ const Folder: React.FC<FolderProps> = ({
       return;
     }
     dispatch(openFileAsync({ token: user.token, fileId: folderData.id }));
+  }
+  function resetFolder() {
+    dispatch(resetSelectedFile());
   }
 
   function formatText(text: string) {
@@ -67,12 +73,14 @@ const Folder: React.FC<FolderProps> = ({
     if (folderDiv) {
       folderDiv.addEventListener("click", selectFolder);
       folderDiv.addEventListener("dblclick", openFolder);
+      window.addEventListener("mousedown", resetFolder);
     }
 
     return () => {
       if (folderDiv) {
         folderDiv.removeEventListener("click", selectFolder);
         folderDiv.removeEventListener("dblclick", openFolder);
+        window.removeEventListener("mousedown", resetFolder);
       }
     };
   }, []);
@@ -83,7 +91,7 @@ const Folder: React.FC<FolderProps> = ({
       id={`folder-${folderData.id}`}
       className={`
         ${styles.folder}        
-        ${selectedFolderId == folderData.id && styles.selected}
+        ${selectedFile.id == folderData.id && styles.selected}
       `}
     >
       <img
