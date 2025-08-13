@@ -20,6 +20,9 @@
   margin: 0;
   word-break: break-all;
 }
+.folder p:hover {
+  cursor: text;
+}
 .folder * {
   width: fit-content;
   text-align: center;

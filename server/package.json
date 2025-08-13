@@ -1,18 +1,21 @@
 {
   "name": "postgresql-experiments",
+  "jest": {
+    "verbose": true
+  },
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "mocha"
+    "reset-db": "./node_modules/.bin/prisma migration reset",
+    "test": "./node_modules/.bin/jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@prisma/client": "^6.13.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -21,6 +24,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.2",
     "express-validator": "^7.2.1",
+    "jest": "^30.0.5",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.10",
     "passport": "^0.7.0",
@@ -30,10 +34,13 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@prisma/client": "^6.14.0",
     "@types/node": "^24.1.0",
     "chai": "^5.2.1",
+    "i": "^0.3.7",
     "mocha": "^11.7.1",
-    "prisma": "^6.13.0",
+    "npm": "^11.5.2",
+    "prisma": "^6.14.0",
     "sinon": "^21.0.0",
     "supertest": "^7.1.4",
     "tsx": "^4.20.3",

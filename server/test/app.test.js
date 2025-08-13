@@ -1,50 +1,34 @@
-const request = require("supertest");
+// test/setup.test.js
+const { exec } = require("child_process");
+const { promisify } = require("util");
+const { PrismaClient } = require("@prisma/client");
 const chai = require("chai");
-const app = require("../app");
+const expect = chai.expect;
 
-const { expect } = chai;
+const execPromise = promisify(exec);
+const prisma = new PrismaClient();
 
-describe("GET /", () => {
-  it("Should render the index page with Login link", (done) => {
-    request(app)
-      .get("/")
-      .expect("Content-Type", /html/)
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.text).to.include('<a href="/login">Login</a>');
-        done();
-      });
-  });
+before(async () => {
+  await execPromise("./node_modules/.bin/prisma generate");
+  process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
+  await prisma.$connect();
 });
 
-describe("GET /login", () => {
-  it("Should render Sign In with Google link", (done) => {
-    request(app)
-      .get("/login")
-      .expect("Content-Type", /html/)
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.text).to.include(`<h1>Login</h1>`);
-        expect(res.text).to.include(`<form action="/login" method="POST">`);
-        done();
-      });
-  });
+after(async () => {
+  await prisma.$disconnect();
 });
 
-describe("GET /not_real_path", () => {
-  it("Should render 404 page.", (done) => {
-    request(app)
-      .get("/not_real_path")
-      .expect("Content-Type", /html/)
-      .expect(404)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.text).to.include(
-          `<h1>Whoops! You're not supposed to be here....</h1>`
-        );
-        done();
-      });
+describe("User Model", () => {
+  it("should create a new user", async () => {
+    const user = await prisma.user.create({
+      data: {
+        firstname: "John",
+        lastname: "Does",
+        email: "john@example.com",
+        password: "password",
+        confirm_password: "password",
+      },
+    });
+    expect(user).to.have.property("id");
   });
 });
