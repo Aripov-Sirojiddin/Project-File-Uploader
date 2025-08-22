@@ -6,6 +6,7 @@ const indexRouter = require("./routers/indexRouter");
 const authRouter = require("./routers/authRouter");
 const folderRouter = require("./routers/folderRouter");
 const passport = require("passport");
+const { multerRouter } = require("./routers/multerRouter");
 const app = express();
 
 app.use(cors());
@@ -35,6 +36,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use("/", authRouter);
 app.use("/folder", folderRouter);
+app.use("/file", multerRouter);
 app.use("/", indexRouter);
 
 app.get("/*splat", (req, res) => {
