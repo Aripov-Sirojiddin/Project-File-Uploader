@@ -1,1 +1,21 @@
-{}
+{
+  "name": "fileuploader_react",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Aripov-Sirojiddin/Project-File-Uploader#readme",
+  "bugs": {
+    "url": "https://github.com/Aripov-Sirojiddin/Project-File-Uploader/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aripov-Sirojiddin/Project-File-Uploader.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start-client": "cd ./client && npm start",
+    "start-server": "cd ./server && npm start"
+  }
+}
