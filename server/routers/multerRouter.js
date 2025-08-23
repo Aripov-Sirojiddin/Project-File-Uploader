@@ -1,15 +1,26 @@
 const { Router } = require("express");
 const { upload } = require("../controllers/multerController");
+const { rename } = require("fs");
+const path = require("path");
 const multerRouter = Router();
 
-multerRouter.post("/upload", function (req, res, next) {
-  upload(req, res, function (err) {
+multerRouter.post("/upload", upload, function (req, res) {
+  console.log(req.body.userId);
+  const originalFile = req.file.path;
+  const newFile = path.join(
+    __dirname,
+    "..",
+    "uploads",
+    `${req.body.userId}-${req.file.originalname}`
+  );
+  rename(originalFile, newFile, (err) => {
     if (err) {
-      return res.status(400).json({ error: err.message });
-    } else {
-      return res.status(200).json({ message: "Image uploaded successfully!" });
+      console.error("Error renaming file:", err);
+      return;
     }
+    console.log("File renamed successfully!");
   });
+  res.status(200).json({ message: "File uploaded successfully" });
 });
 
 module.exports = { multerRouter };
