@@ -1,21 +1,5 @@
 const folderModel = require("../models/folders");
 
-async function getCreateView(req, res) {
-  const folders = await folderModel.getAllByParentId(
-    global.folderId,
-    req.user.id
-  );
-  res.render("pages/logedin", {
-    name: req.user.name,
-    createFolder: true,
-    folders: folders,
-  });
-}
-async function getFolderParentId(req, res) {
-  global.folderId = await folderModel.getParentId(global.folderId);
-  res.redirect("/");
-}
-
 async function openFolder(req, res) {
   const folderId = req.params.folderId;
   const folders = await folderModel.getAllByParentId(folderId, req.user.id);
@@ -59,9 +43,7 @@ async function updateFolder(req, res) {
 }
 
 module.exports = {
-  getCreateView,
   openFolder,
-  getFolderParentId,
   createFolder,
   updateFolder,
 };
